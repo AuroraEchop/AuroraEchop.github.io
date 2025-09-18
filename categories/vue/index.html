@@ -1,0 +1,157 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>分类: vue | AuroraEchop</title><meta name="author" content="AuroraEchop"><meta name="copyright" content="AuroraEchop"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="ffffff"><meta name="description" content="悟已往之不谏，知来者之可追">
+<meta property="og:type" content="website">
+<meta property="og:title" content="AuroraEchop">
+<meta property="og:url" content="http://example.com/categories/vue/">
+<meta property="og:site_name" content="AuroraEchop">
+<meta property="og:description" content="悟已往之不谏，知来者之可追">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://example.com/img/user.jpg">
+<meta property="article:author" content="AuroraEchop">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/img/user.jpg"><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="http://example.com/categories/vue/"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        if (!ttl) return
+        const expiry = Date.now() + ttl * 86400000
+        localStorage.setItem(key, JSON.stringify({ value, expiry }))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return undefined
+        const { value, expiry } = JSON.parse(itemStr)
+        if (Date.now() > expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return value
+      }
+    }
+
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        Object.entries(attr).forEach(([key, val]) => script.setAttribute(key, val))
+        script.onload = script.onreadystatechange = () => {
+          if (!script.readyState || /loaded|complete/.test(script.readyState)) resolve()
+        }
+        script.onerror = reject
+        document.head.appendChild(script)
+      }),
+      getCSS: (url, id) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onload = link.onreadystatechange = () => {
+          if (!link.readyState || /loaded|complete/.test(link.readyState)) resolve()
+        }
+        link.onerror = reject
+        document.head.appendChild(link)
+      }),
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', 'ffffff')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"/search.xml","preload":true,"top_n_per_article":1,"unescape":false,"languages":{"hits_empty":"未找到符合您查询的内容：${query}","hits_stats":"共找到 ${hits} 篇文章"}},
+  translate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false,"highlightFullpage":false,"highlightMacStyle":false},
+  copy: {
+    success: '复制成功',
+    error: '复制失败',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: {"limitCount":150,"languages":{"author":"作者: AuroraEchop","link":"链接: ","source":"来源: AuroraEchop","info":"著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。"}},
+  lightbox: 'null',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyloadPlugin: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '分类: vue',
+  isHighlightShrink: false,
+  isToc: false,
+  pageType: 'category'
+}</script><link rel="stylesheet" href="/css/transpancy.css"><meta name="generator" content="Hexo 7.3.0"></head><body><div id="web_bg" style="background-image: url(/img/bacg.png);"></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img text-center"><img src="/img/friend_404.gif" data-original="/img/user.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data text-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">24</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">3</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">2</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" target="_blank" rel="noopener" href="https://www.programmercarl.com/"><i class="fa-fw fas fa-th"></i><span> 题集</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fas fa-list"></i><span> 列表</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/music/"><i class="fa-fw fas fa-music"></i><span> Music</span></a></li><li><a class="site-page child" href="/movies/"><i class="fa-fw fas fa-video"></i><span> Movie</span></a></li></ul></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fas fa-archive"></i><span> 文章</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/message/"><i class="fa-fw fas fa-comment"></i><span> 留言板</span></a></div><div class="menus_item"><a class="site-page" href="/friends/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-user"></i><span> About</span></a></div></div></div></div><div class="page" id="body-wrap"><header class="not-home-page" id="page-header" style="background-image: url(/img/bacg.png);"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">AuroraEchop</span></a></span><div id="menus"><div id="search-button"><span class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> 搜索</span></span></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" target="_blank" rel="noopener" href="https://www.programmercarl.com/"><i class="fa-fw fas fa-th"></i><span> 题集</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fas fa-list"></i><span> 列表</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/music/"><i class="fa-fw fas fa-music"></i><span> Music</span></a></li><li><a class="site-page child" href="/movies/"><i class="fa-fw fas fa-video"></i><span> Movie</span></a></li></ul></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fas fa-archive"></i><span> 文章</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/message/"><i class="fa-fw fas fa-comment"></i><span> 留言板</span></a></div><div class="menus_item"><a class="site-page" href="/friends/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-user"></i><span> About</span></a></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav><div id="page-site-info"><h1 id="site-title">vue</h1></div></header><main class="layout hide-aside" id="content-inner"><div class="recent-posts nc" id="recent-posts"><div class="recent-post-items"><div class="recent-post-item"><div class="recent-post-info no-cover"><a class="article-title" href="/post/47f3f95c" title="高阶函数">高阶函数</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2025-09-18T13:20:36.717Z" title="发表于 2025-09-18 21:20:36">2025-09-18</time></span><span class="article-meta"><span class="article-meta-separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/vue/">vue</a></span></div><div class="content">在 JavaScript 中，回调函数的返回值能够决定回调函数参数的行为，是因为回调函数的返回值被用于控制外部函数的行为。这种机制在许多高阶函数（如 filter、map、reduce 等）中都非常常见。这些高阶函数通过回调函数的返回值来决定如何处理数组中的每个元素。 常见高阶函数1. filter 函数filter 函数通过回调函数的返回值来决定是否保留当前元素。 123const numbers = [1, 2, 3, 4, 5];const evenNumbers = numbers.filter(number =&gt; number % 2 === 0);console.log(evenNumbers); // 输出: [2, 4]  在这个例子中：  filter 函数遍历 numbers 数组中的每个元素。 对于每个元素，filter 调用回调函数 number =&gt; number % 2 === 0。 回调函数返回 true 或 false。 如果回调函数返回 true，当前元素被保留在结果数组中。 如果回调函数返回...</div></div></div><div class="recent-post-item"><div class="recent-post-info no-cover"><a class="article-title" href="/post/5324faff" title="隐式类型转换">隐式类型转换</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2025-09-18T13:20:36.716Z" title="发表于 2025-09-18 21:20:36">2025-09-18</time></span><span class="article-meta"><span class="article-meta-separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/vue/">vue</a></span></div><div class="content">在 JavaScript 中，隐式类型转换（也称为类型强制）是指在某些操作或比较中，JavaScript 自动将一个值从一种类型转换为另一种类型。这种转换是隐式的，即不需要显式地调用类型转换函数。虽然隐式类型转换在某些情况下可以简化代码，但它也可能导致一些意外的行为和错误，因此需要谨慎使用。 常见的隐式类型转换场景1. 在布尔上下文中当一个值被用在布尔上下文中（如条件语句或布尔运算符中），JavaScript 会将其转换为布尔值。  转换规则： “真值”（truthy）：true、非空字符串、非零数字、对象、数组等。 “假值”（falsy）：false、0、-0、0n（BigInt 的零值）、&quot;&quot;（空字符串）、null、undefined、NaN。    123456789if (1) &#123;  console.log(&quot;1 is truthy&quot;);&#125; // 输出: 1 is truthyif (&quot;&quot;) &#123;  console.log(&quot;Empty string is...</div></div></div><div class="recent-post-item"><div class="recent-post-info no-cover"><a class="article-title" href="/post/937d8196" title="表示对象的方法">表示对象的方法</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2025-09-18T13:20:36.713Z" title="发表于 2025-09-18 21:20:36">2025-09-18</time></span><span class="article-meta"><span class="article-meta-separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/vue/">vue</a></span></div><div class="content">在JavaScript中，表示对象的方法有多种，每种方法都有其特定的用途和语法。以下是一些常见的表示对象的方法： 1. 对象字面量（Object Literal）对象字面量是最常用和最简洁的方式之一，用于创建对象。它使用花括号 &#123;&#125; 包裹一组键值对。 基本语法1234567const objectName = &#123;    key1: value1,    key2: value2,    key3() &#123;        // 方法的实现    &#125;&#125;;  示例12345678910111213const person = &#123;    firstName: &quot;John&quot;,    lastName: &quot;Doe&quot;,    age: 30,    greet() &#123;        console.log(`Hello, my name is $&#123;this.firstName&#125; $&#123;this.lastName&#125;.`);   ...</div></div></div><div class="recent-post-item"><div class="recent-post-info no-cover"><a class="article-title" href="/post/f281eaca" title="类">类</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2025-09-18T13:20:36.710Z" title="发表于 2025-09-18 21:20:36">2025-09-18</time></span><span class="article-meta"><span class="article-meta-separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/vue/">vue</a></span></div><div class="content">在ES6中，构造函数的概念得到了进一步的规范化和增强，主要通过引入class语法来实现。虽然class语法在底层仍然是基于原型链的，但它提供了一种更直观、更接近传统面向对象编程的方式来定义构造函数和类。下面我将详细讲解ES6中的构造函数方法，包括class语法、构造函数的作用、继承等。 1. ES6中的class语法ES6引入了class关键字，用于定义类。类是一种特殊的函数，用于创建对象的模板。类中可以包含构造函数（constructor）和方法。 定义一个类123456789101112class Person &#123;    // 构造函数    constructor(name, age) &#123;        this.name = name;        this.age = age;    &#125;    // 方法    sayHello() &#123;        console.log(`Hello, my name is $&#123;this.name&#125; and I am $&#123;this.age&#125;...</div></div></div><div class="recent-post-item"><div class="recent-post-info no-cover"><a class="article-title" href="/post/f2866b73" title="箭头函数">箭头函数</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2025-09-18T13:20:36.707Z" title="发表于 2025-09-18 21:20:36">2025-09-18</time></span><span class="article-meta"><span class="article-meta-separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/vue/">vue</a></span></div><div class="content"> [!NOTE] 特点总结  this 是静态的，始终指向函数声明时所在作用域下的 this 的值 不能作为构造函数传递参数 不能使用arguments 变量 箭头函数的简写 省略小括号（当形参只有一个的时候） 省略花括号（当代码体只有一条命令的时候，只有一个return，且也省略return ） n &#x3D;&gt; n * n     123const result = arr.filter(function(item)&#123;	if(item % 2 === 0) return true;&#125;)    箭头函数是ES6中引入的一种新的函数语法，它有一些独特的特点和使用场景。以下是关于箭头函数的详细介绍： 基本语法箭头函数的语法比传统函数简洁，基本形式如下： 1234const functionName = (parameters) =&gt; &#123;    // 函数体    return value;&#125;; 如果函数体只有一条语句，且该语句的值就是函数的返回值，那么可以省略花括号和return关键字： 1const functionName...</div></div></div><div class="recent-post-item"><div class="recent-post-info no-cover"><a class="article-title" href="/post/e98504f5" title="深浅拷贝">深浅拷贝</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2025-09-18T13:20:36.705Z" title="发表于 2025-09-18 21:20:36">2025-09-18</time></span><span class="article-meta"><span class="article-meta-separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/vue/">vue</a></span></div><div class="content">123let foo1 = &#123;&#125;;let foo2 = &#123;&#125;;console.log(foo1 === foo2);  // false 对象是引用类型，浅拷贝  浅拷贝陷阱：即使使用 Object.assign() 或拓展运算符  …  进行拷贝，如果对象包含嵌套对象，嵌套部分仍然是引用。修改嵌套对象仍会影响到 “源对象”。   </div></div></div><div class="recent-post-item"><div class="recent-post-info no-cover"><a class="article-title" href="/post/9a02799a" title="模板字符串">模板字符串</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2025-09-18T13:20:36.701Z" title="发表于 2025-09-18 21:20:36">2025-09-18</time></span><span class="article-meta"><span class="article-meta-separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/vue/">vue</a></span></div><div class="content">模板字符串是一种在编程中用于生成字符串的工具，它允许将变量或表达式嵌入到字符串中，从而动态生成字符串内容。不同的编程语言对模板字符串的支持方式和语法有所不同，以下是一些常见编程语言中模板字符串的使用方法： 1. JavaScript在 JavaScript 中，模板字符串使用反引号（`）来定义，变量或表达式可以使用 $&#123;&#125; 的形式嵌入到字符串中。示例代码： 1234const name = &quot;Alice&quot;;const age = 25;const message = `Hello, my name is $&#123;name&#125; and I am $&#123;age&#125; years old.`;console.log(message); // 输出：Hello, my name is Alice and I am 25 years old.  2. Python在 Python 中，模板字符串可以通过 f-string（格式化字符串字面量）实现，它使用花括号 &#123;&#125;...</div></div></div><div class="recent-post-item"><div class="recent-post-info no-cover"><a class="article-title" href="/post/be97aa85" title="概念">概念</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2025-09-18T13:20:36.699Z" title="发表于 2025-09-18 21:20:36">2025-09-18</time></span><span class="article-meta"><span class="article-meta-separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/vue/">vue</a></span></div><div class="content"> Vue：Vue 是一个渐进式 JavaScript 框架，用于构建用户界面。它易于上手，同时也能与现代工具链以及各种库和框架无缝结合。Vue 本身是一个核心库，只关注视图层，也便于与第三方库或既有项目整合。 Vite：Vite 是一个由 Vue 作者尤雨溪开发的新型前端构建工具，它利用原生 ES 模块（ESM）的特性，实现了快速的开发服务器启动和热更新（HMR）。Vite 本身并不是一个框架，而是一个构建工具，它可以与 Vue、React 等多种框架配合使用。 ES6：全称为ECMAScript 2015，是JavaScript语言的一个重要版本，于2015年正式发布。它是JavaScript语言的一个重大更新，引入了许多新特性和改进，使得JavaScript的语法更加简洁、功能更加强大，也更易于编写和维护代码。ES6的发布标志着JavaScript语言进入了一个新的发展阶段，为现代JavaScript开发奠定了基础。 状态提升：在 React 中，状态提升（Lifting State...</div></div></div><div class="recent-post-item"><div class="recent-post-info no-cover"><a class="article-title" href="/post/66c1d8ae" title="操作数组的方法">操作数组的方法</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2025-09-18T13:20:36.696Z" title="发表于 2025-09-18 21:20:36">2025-09-18</time></span><span class="article-meta"><span class="article-meta-separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/vue/">vue</a></span></div><div class="content">改变原数组的方法这些方法会直接修改调用它们的原数组。 1. 添加&#x2F;删除元素 push(): 在数组末尾添加一个或多个元素，并返回新数组的长度。   12let arr = [1, 2, 3];arr.push(4, 5); // arr is now [1, 2, 3, 4, 5]  pop(): 删除数组末尾的最后一个元素，并返回该元素。   12let arr = [1, 2, 3];let last = arr.pop(); // last is 3, arr is now [1, 2]  unshift(): 在数组开头添加一个或多个元素，并返回新数组的长度。   12let arr = [1, 2, 3];arr.unshift(0); // arr is now [0, 1, 2, 3]  shift(): 删除数组开头的第一个元素，并返回该元素。   JavaScript   12let arr = [1, 2, 3];let first = arr.shift(); // first is 1, arr is now [2,...</div></div></div><div class="recent-post-item"><div class="recent-post-info no-cover"><a class="article-title" href="/post/e156be5e" title="拓展运算符">拓展运算符</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2025-09-18T13:20:36.693Z" title="发表于 2025-09-18 21:20:36">2025-09-18</time></span><span class="article-meta"><span class="article-meta-separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/vue/">vue</a></span></div><div class="content">拓展运算符（Spread operator）是 ES6 引入的三个点 ... 语法，用于“展开”可迭代对象（数组、字符串、对象等）的元素，使其成为独立的值。它在解构、函数调用、数组&#x2F;对象操作中非常高效。  ✅ 核心用途与示例1. 数组展开（复制、合并）123const arr1 = [1, 2, 3];const arr2 = [...arr1, 4, 5]; // [1, 2, 3, 4, 5]const arr3 = [...arr1, ...arr2]; // [1, 2, 3, 1, 2, 3, 4, 5]  2. 对象展开（合并属性）123const obj1 = &#123; a: 1, b: 2 &#125;;const obj2 = &#123; ...obj1, c: 3 &#125;; // &#123; a: 1, b: 2, c: 3 &#125;const obj3 = &#123; ...obj1, b: 99 &#125;; // &#123; a: 1, b: 99 &#125;（覆盖同名属性）  3. 函数传参（替代...</div></div></div></div><nav id="pagination"><div class="pagination"><span class="page-number current">1</span><a class="page-number" href="/categories/vue/page/2/">2</a><a class="page-number" href="/categories/vue/page/3/">3</a><a class="extend next" rel="next" href="/categories/vue/page/2/"><i class="fas fa-chevron-right fa-fw"></i></a></div></nav></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2025 By AuroraEchop</div><div class="footer_custom_text">记得好好吃饭，早点睡</div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/instant.page/instantpage.min.js" type="module"></script><div class="js-pjax"></div><canvas class="fireworks" mobile="false"></canvas><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/fireworks.min.js"></script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><span id="loading-status"></span><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="text-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  数据加载中</span></div><div class="search-wrap"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜索" type="text"/></div></div><hr/><div id="local-search-results"></div><div id="local-search-stats-wrap"></div></div></div><div id="search-mask"></div><script src="/js/search/local-search.js"></script></div></div>
+        <style>
+            [bg-lazy] {
+                background-image: none !important;
+                background-color: #eee !important;
+            }
+        </style>
+        <script>
+            window.imageLazyLoadSetting = {
+                isSPA: false,
+                preloadRatio: 1,
+                processImages: null,
+            };
+        </script><script>window.addEventListener("load",function(){var t=/\.(gif|jpg|jpeg|tiff|png)$/i,r=/^data:image\/[a-z\d\-\.\+]+;base64,/;Array.prototype.slice.call(document.querySelectorAll("img[data-original]")).forEach(function(a){var e=a.parentNode;"A"===e.tagName&&(t.test(e.href)||r.test(e.href))&&(e.href=a.dataset.original)})});</script><script>(r=>{r.imageLazyLoadSetting.processImages=t;var a=r.imageLazyLoadSetting.isSPA,o=r.imageLazyLoadSetting.preloadRatio||1,d=i();function i(){var t=Array.prototype.slice.call(document.querySelectorAll("img[data-original]")),e=Array.prototype.slice.call(document.querySelectorAll("[bg-lazy]"));return t.concat(e)}function t(t){(a||t)&&(d=i());for(var e,n=0;n<d.length;n++)0<=(e=(e=d[n]).getBoundingClientRect()).bottom&&0<=e.left&&e.top<=(r.innerHeight*o||document.documentElement.clientHeight*o)&&(()=>{var t,e,a,o,i=d[n];e=function(){d=d.filter(function(t){return i!==t}),r.imageLazyLoadSetting.onImageLoaded&&r.imageLazyLoadSetting.onImageLoaded(i)},(t=i).dataset.loaded||(t.hasAttribute("bg-lazy")?(t.removeAttribute("bg-lazy"),e&&e()):(a=new Image,o=t.getAttribute("data-original"),a.onload=function(){t.src=o,t.removeAttribute("data-original"),t.setAttribute("data-loaded",!0),e&&e()},a.onerror=function(){t.removeAttribute("data-original"),t.setAttribute("data-loaded",!1),t.src=o},t.src!==o&&(a.src=o)))})()}function e(){clearTimeout(t.tId),t.tId=setTimeout(t,500)}t(),document.addEventListener("scroll",e),r.addEventListener("resize",e),r.addEventListener("orientationchange",e)})(this);</script></body></html>
