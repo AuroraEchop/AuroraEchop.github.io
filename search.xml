@@ -4,6 +4,614 @@
   
     
     <entry>
+      <title>手写Promise及方法</title>
+      <link href="/post/1ZPHR14.html"/>
+      <url>/post/1ZPHR14.html</url>
+      
+        <content type="html"><![CDATA[<h4 id="（1）Promise"><a href="#（1）Promise" class="headerlink" title="（1）Promise"></a>（1）Promise</h4><p>![[Pasted image 20260124190554.png]]<br>![[Pasted image 20260124190628.png]]<br>![[Pasted image 20260124190657.png]]<br>![[Pasted image 20260124190719.png]]</p><h4 id="（2）Promise-then"><a href="#（2）Promise-then" class="headerlink" title="（2）Promise.then"></a>（2）Promise.then</h4><p><code>then</code> 方法返回一个新的 <code>promise</code> 实例，为了在 <code>promise</code> 状态发生变化时（<code>resolve</code> &#x2F; <code>reject</code> 被调用时）再执行 <code>then</code> 里的函数，我们使用一个 <code>callbacks</code> 数组先把传给then的函数暂存起来，等状态改变时再调用。</p><p><strong>那么，怎么保证后一个 <code>then</code> 里的方法在前一个 <code>then</code>（可能是异步）结束之后再执行呢？</strong></p><p>可以将传给 <code>then</code> 的函数和新 <code>promise</code> 的 <code>resolve</code> 一起 <code>push</code> 到前一个 <code>promise</code> 的 <code>callbacks</code> 数组中，达到承前启后的效果：</p><ul><li><p>承前：当前一个 <code>promise</code> 完成后，调用其 <code>resolve</code> 变更状态，在这个 <code>resolve</code> 里会依次调用 <code>callbacks</code> 里的回调，这样就执行了 <code>then</code> 里的方法了</p></li><li><p>启后：上一步中，当 <code>then</code> 里的方法执行完成后，返回一个结果，如果这个结果是个简单的值，就直接调用新 <code>promise</code> 的 <code>resolve</code>，让其状态变更，这又会依次调用新 <code>promise</code> 的 <code>callbacks</code> 数组里的方法，循环往复。。如果返回的结果是个 <code>promise</code>，则需要等它完成之后再触发新 <code>promise</code> 的 <code>resolve</code>，所以可以在其结果的 <code>then</code> 里调用新 <code>promise</code> 的 <code>resolve</code><br>![[Pasted image 20260124190835.png]]<br><strong>注意：</strong></p></li><li><p>连续多个 <code>then</code> 里的回调方法是同步注册的，但注册到了不同的 <code>callbacks</code> 数组中，因为每次 <code>then</code> 都返回新的 <code>promise</code> 实例（参考上面的例子和图）</p></li><li><p>注册完成后开始执行构造函数中的异步事件，异步完成之后依次调用 <code>callbacks</code> 数组中提前注册的回调</p></li></ul><h4 id="（3）Promise-all"><a href="#（3）Promise-all" class="headerlink" title="（3）Promise.all"></a>（3）Promise.all</h4><p>该方法的参数是 Promise 的实例数组, 然后注册一个 then 方法。 待数组中的 Promise 实例的状态都转为 fulfilled 之后则执行 then 方法.，这里主要就是一个计数逻辑, 每当一个 Promise 的状态变为 fulfilled 之后就保存该实例返回的数据, 然后将计数减一, 当<code>计数器</code>变为 <code>0</code> 时, 代表数组中所有 Promise 实例都执行完毕.<br>![[Pasted image 20260124190901.png]]</p><h4 id="（4）Promise-race"><a href="#（4）Promise-race" class="headerlink" title="（4）Promise.race"></a>（4）Promise.race</h4><p>该方法的参数是 Promise 实例数组, 然后其 then 注册的回调方法是数组中的某一个 Promise 的状态变为 fulfilled 的时候就执行. 因为 Promise 的状态<strong>只能改变一次</strong>, 那么我们只需要把 Promise.race 中产生的 Promise 对象的 resolve 方法, 注入到数组中的每一个 Promise 实例中的回调函数中即可：<br>![[Pasted image 20260124190942.png]]</p>]]></content>
+      
+      
+      <categories>
+          
+          <category> 手写 </category>
+          
+      </categories>
+      
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>手写instanceof</title>
+      <link href="/post/3VG9P55.html"/>
+      <url>/post/3VG9P55.html</url>
+      
+        <content type="html"><![CDATA[<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">function</span> <span class="title function_">myinstanceof</span>(<span class="params">L, R</span>)&#123;</span><br><span class="line"><span class="keyword">while</span>(L !== <span class="literal">null</span>)&#123;</span><br><span class="line"><span class="keyword">if</span>(L.<span class="property">__proto__</span> === R.<span class="property"><span class="keyword">prototype</span></span>)</span><br><span class="line"><span class="keyword">return</span> <span class="literal">true</span>;  </span><br><span class="line">L = L.<span class="property">__proto__</span> </span><br><span class="line">&#125; </span><br><span class="line"><span class="keyword">return</span> <span class="literal">false</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="title function_">myinstanceof</span>([], <span class="title class_">Array</span>)) <span class="comment">// true</span></span><br></pre></td></tr></table></figure><h2 id="L-instanceof-R-操作符形式实现"><a href="#L-instanceof-R-操作符形式实现" class="headerlink" title="L instanceof R (操作符形式实现)"></a>L instanceof R (操作符形式实现)</h2><p>JS 引擎内部实际上在做类似这样的操作：</p><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="title class_">Array</span>[<span class="title class_">Symbol</span>.<span class="property">hasInstance</span>]([])</span><br></pre></td></tr></table></figure><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">MyArray</span> &#123;</span><br><span class="line">  <span class="comment">// 自定义 instanceof 的行为</span></span><br><span class="line">  <span class="keyword">static</span> [<span class="title class_">Symbol</span>.<span class="property">hasInstance</span>](instance) &#123;</span><br><span class="line">    <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&quot;正在检查 instance:&quot;</span>, instance);</span><br><span class="line">    <span class="keyword">return</span> <span class="title class_">Array</span>.<span class="title function_">isArray</span>(instance); <span class="comment">// 这里我们可以随便定义逻辑</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> arr = [<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>];</span><br><span class="line"></span><br><span class="line"><span class="comment">// 当你使用运算符语法时：</span></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(arr <span class="keyword">instanceof</span> <span class="title class_">MyArray</span>); </span><br><span class="line"><span class="comment">// 输出: </span></span><br><span class="line"><span class="comment">// &quot;正在检查 instance: [1, 2, 3]&quot;</span></span><br><span class="line"><span class="comment">// true</span></span><br></pre></td></tr></table></figure>]]></content>
+      
+      
+      <categories>
+          
+          <category> 手写 </category>
+          
+      </categories>
+      
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>promise</title>
+      <link href="/post/2DGR8WG.html"/>
+      <url>/post/2DGR8WG.html</url>
+      
+        <content type="html"><![CDATA[<h4 id="💡-面试加分点：解释核心逻辑"><a href="#💡-面试加分点：解释核心逻辑" class="headerlink" title="💡 面试加分点：解释核心逻辑"></a>💡 面试加分点：解释核心逻辑</h4><p>你可以这样告诉面试官：</p><blockquote><p>“Promise 本质上就是一个<strong>观察者模式</strong>（或发布订阅模式）。<code>constructor</code> 里立即执行业务逻辑，如果是异步的（比如 <code>setTimeout</code>），状态暂时不会变。此时调用 <code>then</code>，我会把回调函数 push 到一个数组里<strong>存起来</strong>。等到异步操作结束，调用 <code>resolve</code> 时，再遍历这个数组，把存好的回调拿出来执行。”</p></blockquote><p><em>(注：真正的 Promise <code>then</code> 必须返回一个新的 Promise 也就是链式调用，且执行时机是微任务。但在手写题中，能写出上面这个“异步回调存储”的逻辑，通常就已经及格了。)</em></p>]]></content>
+      
+      
+      <categories>
+          
+          <category> 手写 </category>
+          
+      </categories>
+      
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>semver规范</title>
+      <link href="/post/19R72MK.html"/>
+      <url>/post/19R72MK.html</url>
+      
+        <content type="html"><![CDATA[<p>范围语法：<code>^2.11.4</code> &#x3D; <code>&gt;=2.11.4 &lt;3.0.0</code>；<code>~2.11.4</code> &#x3D; <code>&gt;=2.11.4 &lt;2.12.0</code>。<br><strong>大”破、“小”增、“补”修</strong></p>]]></content>
+      
+      
+      <categories>
+          
+          <category> 工程化 </category>
+          
+      </categories>
+      
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>CDN</title>
+      <link href="/post/24ER30X.html"/>
+      <url>/post/24ER30X.html</url>
+      
+        <content type="html"><![CDATA[<p><strong>CDN</strong> 全称是 <strong>Content Delivery Network</strong>（内容分发网络）</p><h3 id="一、-什么是-CDN？（通俗版）"><a href="#一、-什么是-CDN？（通俗版）" class="headerlink" title="一、 什么是 CDN？（通俗版）"></a>一、 什么是 CDN？（通俗版）</h3><p><strong>场景</strong>： 假设你在<strong>深圳</strong>，你想买一瓶<strong>北京</strong>厂家生产的可乐。</p><ol><li><strong>没有 CDN 的情况（直连源站）</strong>： 你下单 -&gt; 厂家从北京仓库发货 -&gt; 跨越几千公里 -&gt; 送到深圳。</li><li><strong>有 CDN 的情况（边缘节点）</strong>： 厂家提前把可乐运送到全国各地的<strong>分仓库</strong>（CDN 节点）。 你下单 -&gt; 系统发现你在深圳 -&gt; <strong>自动指派深圳南山区的分仓库</strong>给你发货 -&gt; 1小时送到。</li></ol><blockquote><p><strong>技术总结</strong>： CDN 就是建立在网络之上的“智能虚拟网络”。它在全世界各处都放了服务器（节点），当用户请求资源（图片、JS、CSS）时，CDN 会让用户去<strong>离他最近、最快</strong>的那个服务器下载，而不是大家都去挤那台中心服务器。</p></blockquote>]]></content>
+      
+      
+      <categories>
+          
+          <category> 工程化 </category>
+          
+      </categories>
+      
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>防抖和节流</title>
+      <link href="/post/3W5VQSX.html"/>
+      <url>/post/3W5VQSX.html</url>
+      
+        <content type="html"><![CDATA[<h1 id="防抖"><a href="#防抖" class="headerlink" title="防抖"></a>防抖</h1><blockquote><p>单位时间内，频繁触发事件，只执行最后一次</p></blockquote><h2 id="利用lodash库实现防抖"><a href="#利用lodash库实现防抖" class="headerlink" title="利用lodash库实现防抖"></a>利用lodash库实现防抖</h2><p>语法：</p><ul><li><code>_.debounce(fun,时间)</code></li><li>鼠标在div移动，+1，防抖间隔未0.5s：</li></ul><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> div = <span class="variable language_">document</span>.<span class="title function_">querySelect</span>(<span class="string">&#x27;div&#x27;</span>)</span><br><span class="line"><span class="keyword">let</span> i =<span class="number">1</span></span><br><span class="line"><span class="keyword">function</span> <span class="title function_">mouseMove</span>(<span class="params"></span>)&#123;div.<span class="property">innerHTML</span> = i++&#125;</span><br><span class="line">div.<span class="title function_">addEventListener</span>(<span class="string">&#x27;mousemove&#x27;</span>, _.<span class="title function_">debounce</span>(mouseMove, <span class="number">500</span>))</span><br></pre></td></tr></table></figure><h2 id="手写防抖函数"><a href="#手写防抖函数" class="headerlink" title="手写防抖函数"></a>手写防抖函数</h2><p>![[Pasted image 20260124212423.png]]<br>![[Pasted image 20260124214120.png]]</p><blockquote><p>44行要写return一个函数：因为52行事件的回调带了参数，所以是传入了debounce的调用返回值（没有参数的函数名是传入函数的引用），这里要返回一个函数的引用，也就是return function(){…}</p></blockquote><h1 id="节流"><a href="#节流" class="headerlink" title="节流"></a>节流</h1><blockquote><p>单位时间，频繁触发事件，只执行一次<br>使用场景：高频事件（鼠标移动、页面尺寸缩放、滚动条滚动）<br>![[Pasted image 20260125210941.png]]</p></blockquote><h2 id="利用lodash库实现节流"><a href="#利用lodash库实现节流" class="headerlink" title="利用lodash库实现节流"></a>利用lodash库实现节流</h2><p>语法：</p><ul><li><code>_.throttle(fun,时间)</code></li></ul><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> div = <span class="variable language_">document</span>.<span class="title function_">querySelect</span>(<span class="string">&#x27;div&#x27;</span>)</span><br><span class="line"><span class="keyword">let</span> i =<span class="number">1</span></span><br><span class="line"><span class="keyword">function</span> <span class="title function_">mouseMove</span>(<span class="params"></span>)&#123;div.<span class="property">innerHTML</span> = i++&#125;</span><br><span class="line">div.<span class="title function_">addEventListener</span>(<span class="string">&#x27;mousemove&#x27;</span>, _.<span class="title function_">debounce</span>(mouseMove, <span class="number">500</span>))</span><br></pre></td></tr></table></figure><h2 id="手写节流函数"><a href="#手写节流函数" class="headerlink" title="手写节流函数"></a>手写节流函数</h2><p>![[Pasted image 20260125212819.png]]<br>![[Pasted image 20260125212943.png]]</p><blockquote><p>这里清空定时器使用的是 null，而不是clearTimeout，因为定时器内部无法清除，将定时器的指向清空后，定时器会被垃圾回收机制自动删除</p></blockquote><h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>![[Pasted image 20260125214255.png]]</p>]]></content>
+      
+      
+      <categories>
+          
+          <category> js </category>
+          
+      </categories>
+      
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>闭包</title>
+      <link href="/post/3WP6RWJ.html"/>
+      <url>/post/3WP6RWJ.html</url>
+      
+        <content type="html"><![CDATA[<p>![[Pasted image 20260126163440.png]]</p><h3 id="闭包的作用"><a href="#闭包的作用" class="headerlink" title="闭包的作用"></a>闭包的作用</h3><blockquote><p>[!note ] 封闭数据，提供操作，外部也可以访问函数内部的变量</p></blockquote><h4 id="访问内部变量"><a href="#访问内部变量" class="headerlink" title="访问内部变量"></a>访问内部变量</h4><p>![[Pasted image 20260126164605.png]]</p><h4 id="实现数据私有"><a href="#实现数据私有" class="headerlink" title="实现数据私有"></a>实现数据私有</h4><p>![[Pasted image 20260126165814.png]]<br>这里有关垃圾回收机制：<br>const result &#x3D; fn()是全局的，标记清除法通过：<strong>result -&gt;fun -&gt;（内层函数fun调用了外层的变量）count</strong> ，能找到这个变量，所以即使在fn函数内部，变量也不会清除<br>![[Pasted image 20260126170654.png]]</p><h3 id="闭包的缺点-内存泄露"><a href="#闭包的缺点-内存泄露" class="headerlink" title="闭包的缺点: 内存泄露"></a>闭包的缺点: 内存泄露</h3><p>可能存在内存泄漏，因为上面例子中的内部函数的变量一直不销毁</p>]]></content>
+      
+      
+      <categories>
+          
+          <category> js </category>
+          
+      </categories>
+      
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>解构</title>
+      <link href="/post/1Z790CY.html"/>
+      <url>/post/1Z790CY.html</url>
+      
+        <content type="html"><![CDATA[<h3 id="数组解构"><a href="#数组解构" class="headerlink" title="数组解构"></a>数组解构</h3><p>![[Pasted image 20260127135819.png]]</p><ul><li>可以设定默认参数</li><li>支持解构多维数组，但是要保证解构一致</li></ul><h3 id="对象解构"><a href="#对象解构" class="headerlink" title="对象解构"></a>对象解构</h3><p>![[Pasted image 20260127141743.png]]<br>属相值必须等于变量名，当属性值不能改的时候，可以变量名重命名：<br>![[Pasted image 20260127142436.png]]</p><p>![[Pasted image 20260127142553.png]]</p><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> pig = &#123; name :<span class="string">&#x27;佩奇&#x27;</span> , <span class="attr">age</span>: <span class="number">6</span>&#125;</span><br><span class="line"><span class="keyword">const</span> &#123; name, age &#125; = pig;</span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(name); <span class="comment">// 佩奇</span></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(age);  <span class="comment">// 6</span></span><br><span class="line"><span class="keyword">const</span>&#123; <span class="attr">name</span>: n, <span class="attr">age</span>: m&#125; = pig;</span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(n); <span class="comment">// 佩奇</span></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(m); <span class="comment">// 6</span></span><br><span class="line"><span class="keyword">const</span> goods = [&#123;</span><br><span class="line">    <span class="attr">goodsName</span>:<span class="string">&#x27;小米&#x27;</span>,</span><br><span class="line">    <span class="attr">price</span>: <span class="number">1999</span></span><br><span class="line">&#125;]</span><br><span class="line"><span class="keyword">const</span> [&#123;goodsName, price&#125;] = goods;</span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(goodsName); <span class="comment">// 小米</span></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(price); <span class="comment">// 1999</span></span><br></pre></td></tr></table></figure><p>![[Pasted image 20260127144044.png]]</p><blockquote><p>可以给函数传参的时候解构赋值</p></blockquote>]]></content>
+      
+      
+      <categories>
+          
+          <category> js </category>
+          
+      </categories>
+      
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>数组方法练习</title>
+      <link href="/post/396Q9NJ.html"/>
+      <url>/post/396Q9NJ.html</url>
+      
+        <content type="html"><![CDATA[<pre><code>### 1. 数组去重</code></pre><ul><li>如何去除数组中的重复元素？请举例说明使用 <code>Set</code>、<code>filter</code> 和 <code>reduce</code> 去重的不同方法。</li></ul><h4 id="set构造函数（自动去重）"><a href="#set构造函数（自动去重）" class="headerlink" title="set构造函数（自动去重）"></a>set构造函数（自动去重）</h4><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 数组 → Set（去重）</span></span><br><span class="line"><span class="keyword">const</span> arr = [<span class="number">1</span>, <span class="number">2</span>, <span class="number">2</span>, <span class="number">3</span>];</span><br><span class="line"><span class="keyword">const</span> unique = [...<span class="keyword">new</span> <span class="title class_">Set</span>(arr)]; <span class="comment">// [1, 2, 3]</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// Set → 数组</span></span><br><span class="line"><span class="keyword">const</span> set = <span class="keyword">new</span> <span class="title class_">Set</span>([<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>]);</span><br><span class="line"><span class="keyword">const</span> arr2 = <span class="title class_">Array</span>.<span class="title function_">from</span>(set); <span class="comment">// [1, 2, 3]</span></span><br></pre></td></tr></table></figure><p>对比两种方法的区别：</p><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> set = <span class="keyword">new</span> <span class="title class_">Set</span>([<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>]);</span><br><span class="line"></span><br><span class="line"><span class="comment">// Array.from 的优势：第二个参数是 map 函数</span></span><br><span class="line"><span class="title class_">Array</span>.<span class="title function_">from</span>(set, <span class="function"><span class="params">x</span> =&gt;</span> x * <span class="number">2</span>); <span class="comment">// [2, 4, 6]</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 对比 [...set] 需要链式调用</span></span><br><span class="line">[...set].<span class="title function_">map</span>(<span class="function"><span class="params">x</span> =&gt;</span> x * <span class="number">2</span>); <span class="comment">// [2, 4, 6]，多创建了一个中间数组</span></span><br></pre></td></tr></table></figure><p><strong>特性</strong>：</p><ul><li>时间复杂度：<strong>O(n)</strong>（哈希表实现）</li><li>无法对<strong>对象内容</strong>去重（ <code>&#123;&#125; !== &#123;&#125;</code> ）</li></ul><h4 id="filter-方法（函数式-保留首次出现）"><a href="#filter-方法（函数式-保留首次出现）" class="headerlink" title="filter 方法（函数式&#x2F;保留首次出现）"></a>filter 方法（函数式&#x2F;保留首次出现）</h4><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> arr = [<span class="number">1</span>, <span class="number">2</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">3</span>, <span class="number">3</span>];</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> unique = arr.<span class="title function_">filter</span>(<span class="function">(<span class="params">item, index, self</span>) =&gt;</span> &#123;</span><br><span class="line">  <span class="keyword">return</span> self.<span class="title function_">indexOf</span>(item) === index;</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(unique); <span class="comment">// [1, 2, 3]</span></span><br></pre></td></tr></table></figure><p><strong>核心机制</strong>：通过 <code>indexOf</code> 查找元素<strong>第一次出现的索引</strong>，若当前索引不等于首次索引，则过滤掉。<br><strong>性能</strong>：<strong>O(n²)</strong>，因为 <code>indexOf</code> 内部需遍历数组。</p><h4 id="reduce-方法（累加器-最灵活）"><a href="#reduce-方法（累加器-最灵活）" class="headerlink" title="reduce 方法（累加器&#x2F;最灵活）"></a>reduce 方法（累加器&#x2F;最灵活）</h4><h5 id="基础版（O-n²-）"><a href="#基础版（O-n²-）" class="headerlink" title="基础版（O(n²)）"></a>基础版（O(n²)）</h5><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> unique = arr.<span class="title function_">reduce</span>(<span class="function">(<span class="params">acc, cur</span>) =&gt;</span> &#123;</span><br><span class="line">  <span class="keyword">return</span> acc.<span class="title function_">includes</span>(cur) ? acc : [...acc, cur];</span><br><span class="line">&#125;, []);</span><br></pre></td></tr></table></figure><h5 id="优化版（O-n-保留顺序）"><a href="#优化版（O-n-保留顺序）" class="headerlink" title="优化版（O(n) + 保留顺序）"></a>优化版（O(n) + 保留顺序）</h5><h3 id="2-数组的切割与分段"><a href="#2-数组的切割与分段" class="headerlink" title="2. 数组的切割与分段"></a>2. <strong>数组的切割与分段</strong></h3><h4 id="Q1-如何使用-slice-和-splice-方法从数组中提取或删除元素？请解释它们的区别。"><a href="#Q1-如何使用-slice-和-splice-方法从数组中提取或删除元素？请解释它们的区别。" class="headerlink" title="Q1:  如何使用 slice 和 splice 方法从数组中提取或删除元素？请解释它们的区别。"></a>Q1:  如何使用 <code>slice</code> 和 <code>splice</code> 方法从数组中提取或删除元素？请解释它们的区别。</h4><p><code>slice</code> 和 <code>splice</code> 是 JavaScript 中最容易混淆的两个方法，核心区别：<strong><code>slice</code> 是”只读复制”，<code>splice</code> 是”手术刀切割”</strong>。</p><p><strong>面试金句</strong>：”<code>slice</code> 是函数式编程的切片刀，返回副本支持链式调用；<code>splice</code> 是急诊手术刀，原地开刀返回切除的组织，用错会导致副作用 Bug。”</p><h4 id="Q2-你会如何使用-slice-将数组分割成多个部分？"><a href="#Q2-你会如何使用-slice-将数组分割成多个部分？" class="headerlink" title="Q2: 你会如何使用 slice 将数组分割成多个部分？"></a>Q2: 你会如何使用 <code>slice</code> 将数组分割成多个部分？</h4><h5 id="1-固定大小分块（Chunk）-最常用"><a href="#1-固定大小分块（Chunk）-最常用" class="headerlink" title="1. 固定大小分块（Chunk）- 最常用"></a>1. 固定大小分块（Chunk）- 最常用</h5><p>将数组按每块 <code>size</code> 个元素分割（适用于分页上传、批量 API 请求）：</p><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">function</span> <span class="title function_">chunk</span>(<span class="params">arr, size</span>) &#123;</span><br><span class="line">  <span class="keyword">const</span> result = [];</span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">let</span> i = <span class="number">0</span>; i &lt; arr.<span class="property">length</span>; i += size) &#123;</span><br><span class="line">    result.<span class="title function_">push</span>(arr.<span class="title function_">slice</span>(i, i + size));</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> result;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 使用</span></span><br><span class="line"><span class="keyword">const</span> data = [<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>, <span class="number">6</span>, <span class="number">7</span>, <span class="number">8</span>];</span><br><span class="line"><span class="title function_">chunk</span>(data, <span class="number">3</span>);</span><br><span class="line"><span class="comment">// [[1, 2, 3], [4, 5, 6], [7, 8]]</span></span><br></pre></td></tr></table></figure><h5 id="2-滑动窗口（Sliding-Window）"><a href="#2-滑动窗口（Sliding-Window）" class="headerlink" title="2. 滑动窗口（Sliding Window）"></a>2. 滑动窗口（Sliding Window）</h5><p>获取连续重叠的子数组（用于算法题如”和最大的连续子数组”）：</p><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">function</span> <span class="title function_">slidingWindow</span>(<span class="params">arr, windowSize</span>) &#123;</span><br><span class="line">  <span class="keyword">const</span> windows = [];</span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">let</span> i = <span class="number">0</span>; i &lt;= arr.<span class="property">length</span> - windowSize; i++) &#123;</span><br><span class="line">    windows.<span class="title function_">push</span>(arr.<span class="title function_">slice</span>(i, i + windowSize));</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> windows;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="title function_">slidingWindow</span>([<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>], <span class="number">3</span>);</span><br><span class="line"><span class="comment">// [[1, 2, 3], [2, 3, 4], [3, 4, 5]]</span></span><br></pre></td></tr></table></figure><h6 id="关键边界处理"><a href="#关键边界处理" class="headerlink" title="关键边界处理"></a>关键边界处理</h6><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// slice 自动处理越界，无需手动判断</span></span><br><span class="line">[<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>].<span class="title function_">slice</span>(<span class="number">0</span>, <span class="number">100</span>);  <span class="comment">// [1, 2, 3]  不报错</span></span><br><span class="line">[<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>].<span class="title function_">slice</span>(<span class="number">5</span>, <span class="number">10</span>);   <span class="comment">// []         返回空数组</span></span><br></pre></td></tr></table></figure><p><strong>性能提示</strong>：如果分割后需要频繁修改子数组，建议 <code>slice</code> 后使用 <code>map</code> 或展开运算符创建深拷贝，避免引用污染。</p>]]></content>
+      
+      
+      <categories>
+          
+          <category> js </category>
+          
+      </categories>
+      
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>数组原型方法</title>
+      <link href="/post/1EXYNMR.html"/>
+      <url>/post/1EXYNMR.html</url>
+      
+        <content type="html"><![CDATA[<ul><li><code>join()</code>：用指定的分隔符将数组每一项拼接为字符串</li><li><code>push()</code> ：向数组的末尾添加新元素</li><li><code>pop()</code>：删除数组的最后一项</li><li><code>shift()</code>：删除数组的第一项</li><li><code>unshift()</code>：向数组首位添加新元素</li><li><code>slice()</code>：按照条件查找出其中的部分元素</li><li><code>splice()</code>：对数组进行增删改</li><li><code>fill()</code>: 方法能使用特定值填充数组中的一个或多个元素</li><li><code>filter()</code>:“过滤”功能</li><li><code>concat()</code>：用于连接两个或多个数组</li><li><code>indexOf()</code>：检测当前值在数组中第一次出现的位置索引</li><li><code>lastIndexOf()</code>：检测当前值在数组中最后一次出现的位置索引</li><li><code>every()</code>：判断数组中每一项都是否满足条件</li><li><code>some()</code>：判断数组中是否存在满足条件的项</li><li><code>includes()</code>：判断一个数组是否包含一个指定的值</li><li><code>sort()</code>：对数组的元素进行排序</li><li><code>reverse()</code>：对数组进行倒序</li><li><code>forEach()</code>：ES5 及以下循环遍历数组每一项</li><li><code>map()</code>：ES6 循环遍历数组每一项</li><li><code>copyWithin()</code>:用于从数组的指定位置拷贝元素到数组的另一个指定位置中</li><li><code>find()</code>:返回匹配的值</li><li><code>findIndex()</code>:返回匹配位置的索引</li><li><code>toLocaleString()、toString()</code>:将数组转换为字符串</li><li><code>flat()、flatMap()</code>：扁平化数组</li><li><code>entries() 、keys() 、values()</code>:遍历数组</li></ul>]]></content>
+      
+      
+      <categories>
+          
+          <category> js </category>
+          
+      </categories>
+      
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>数据类型转换</title>
+      <link href="/post/YTMJZM.html"/>
+      <url>/post/YTMJZM.html</url>
+      
+        <content type="html"><![CDATA[<pre><code>数据类型之间的转换可以分为下面三种：</code></pre><ol><li>原始数据类型之间的转换。</li><li>原始数据类型转换为对象。</li><li>对象转换为原始数据类型。</li></ol><h2 id="1-原始数据之间的转换"><a href="#1-原始数据之间的转换" class="headerlink" title="1. 原始数据之间的转换"></a>1. 原始数据之间的转换</h2><h3 id="1-原始数据类型转Number"><a href="#1-原始数据类型转Number" class="headerlink" title="1 原始数据类型转Number"></a>1 原始数据类型转Number</h3><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="title class_">Number</span>(<span class="literal">true</span>)); <span class="comment">// 1 </span></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="title class_">Number</span>(<span class="literal">undefined</span>)); <span class="comment">// NaN </span></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="title class_">Number</span>(<span class="literal">null</span>)); <span class="comment">// 0</span></span><br></pre></td></tr></table></figure><p>而对于字符串，我们也可以使用<code>parseInt()</code>来转换字符串。</p><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="built_in">parseInt</span>(<span class="string">&#x27;123&#x27;</span>)); <span class="comment">// 123 </span></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="built_in">parseInt</span>(<span class="string">&#x27;12.3&#x27;</span>)); <span class="comment">// 12 </span></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="built_in">parseInt</span>(<span class="string">&#x27;12ds8&#x27;</span>));<span class="comment">// 12 </span></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="built_in">parseInt</span>(<span class="string">&#x27;ads25&#x27;</span>)); <span class="comment">// NaN</span></span><br></pre></td></tr></table></figure><h3 id="2-原始数据类型转String"><a href="#2-原始数据类型转String" class="headerlink" title="2 原始数据类型转String"></a>2 原始数据类型转String</h3><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="title class_">String</span>(<span class="title class_">NaN</span>));<span class="comment">//NaN</span></span><br></pre></td></tr></table></figure><h3 id="3-原始数据类型转Boolean"><a href="#3-原始数据类型转Boolean" class="headerlink" title="3 原始数据类型转Boolean"></a>3 原始数据类型转Boolean</h3><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="title class_">Boolean</span>());<span class="comment">// false </span></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="title class_">Boolean</span>(<span class="string">&#x27;Ywis&#x27;</span>));<span class="comment">// true</span></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="title class_">Boolean</span>(<span class="number">123</span>));<span class="comment">// true </span></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="title class_">Boolean</span>(<span class="title class_">NaN</span>));<span class="comment">// false </span></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="title class_">Boolean</span>(<span class="literal">undefined</span>));<span class="comment">// false </span></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="title class_">Boolean</span>(<span class="literal">null</span>));<span class="comment">// false </span></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="title class_">Boolean</span>(<span class="literal">true</span>));<span class="comment">// true</span></span><br></pre></td></tr></table></figure><pre><code>除了以上七个值外，其他值（包括对象、数组、函数等）在转换为布尔值时都会返回 `true`。这种规则使得 JS 中的大多数值被视为真值（truthy）。</code></pre><h2 id="2-原始数据类型转换为对象"><a href="#2-原始数据类型转换为对象" class="headerlink" title="2. 原始数据类型转换为对象"></a>2. 原始数据类型转换为对象</h2><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="title class_">Object</span>());<span class="comment">//&#123;&#125; </span></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="title class_">Object</span>(<span class="string">&#x27;Ywis&#x27;</span>));<span class="comment">//[String: &#x27;Ywis&#x27;] </span></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="title class_">Object</span>(<span class="number">123</span>));<span class="comment">//[Number: 123] </span></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="title class_">Object</span>(<span class="literal">true</span>));<span class="comment">//[Boolean: true] </span></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="title class_">Object</span>(<span class="literal">undefined</span>));<span class="comment">//&#123;&#125; </span></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="title class_">Object</span>(<span class="literal">null</span>));<span class="comment">//&#123;&#125;</span></span><br></pre></td></tr></table></figure><blockquote><p>其实类型的相互转换都是 包装对象；<br>类型转化就是使用 相互包装（没用new 是工具函数），但是只有转换为对象的时候使用了构造函数（用了new 是构造函数）。</p></blockquote><h2 id="3-对象转换为原始数据类型（ToPrimitive-底层原理）"><a href="#3-对象转换为原始数据类型（ToPrimitive-底层原理）" class="headerlink" title="3. 对象转换为原始数据类型（ToPrimitive 底层原理）"></a>3. 对象转换为原始数据类型（ToPrimitive 底层原理）</h2><p>在 JavaScript 中，<code>ToPrimitive</code> 是一个抽象操作，用于将值转换为原始数据类型。它是在一些内部操作中使用的概念，例如在进行算术运算、比较操作、或将对象转换为原始值时。</p><p><code>ToPrimitive</code> 操作涉及到以下步骤：</p><ol><li>如果值已经是原始数据类型，则直接返回该值。</li><li>否则，调用对象的 <code>valueOf()</code> 方法。如果返回的是原始数据类型，则将其作为结果返回。</li><li>否则，调用对象的 <code>toString()</code> 方法。如果返回的是原始数据类型，则将其作为结果返回。</li><li>如果上述步骤都无法得到原始数据类型的值，则抛出类型错误（TypeError）。</li></ol><h3 id="valueOf-NaN"><a href="#valueOf-NaN" class="headerlink" title="valueOf"></a>valueOf</h3><p><code>valueOf()</code> 是 JavaScript 对象的一个方法，如果对象具有原始数据类型的值，则直接返回该值；否则返回对象本身。</p><ul><li>基本包装类型直接返回原始值</li><li>Date 类型返回毫秒数</li><li>其他都返回对象本身</li></ul><h3 id="toString-NaN"><a href="#toString-NaN" class="headerlink" title="toString"></a>toString</h3><p><code>toString()</code> 方法是 JavaScript 中所有对象继承自 <code>Object.prototype</code> 的方法，用于返回对象的字符串表示形式。</p><ul><li>基本包装类型直接返回原始值</li><li>很多类都有实现各自版本的 toString()，例如日期、数组、函数。<ul><li>对象调用:{}.toSring 返回由”[Object” 和 类型名 和”]”组成的字符串</li><li>数组调用:[].toString 返回由数组内部元素以逗号拼接的字符串</li><li>Date类型转换为可读的日期和时间字符串</li><li>函数调用：返回这个函数定义的 JS 源代码字符串</li></ul></li></ul>]]></content>
+      
+      
+      <categories>
+          
+          <category> js </category>
+          
+      </categories>
+      
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>数据类型判断</title>
+      <link href="/post/ACH49R.html"/>
+      <url>/post/ACH49R.html</url>
+      
+        <content type="html"><![CDATA[<h5 id="typeof"><a href="#typeof" class="headerlink" title="typeof"></a><strong>typeof</strong></h5><ul><li>可以判断除 <code>null</code> 之外的所有原始类型。</li><li>除了<code>function</code>其他所有的引用类型都会被判断成object。</li><li><code>typeof</code>是通过将值转换为二进制后判断其二进制前三位是否为0，是则为<code>object</code>。</li></ul><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="keyword">typeof</span> []); <span class="comment">// &quot;object&quot;</span></span><br></pre></td></tr></table></figure><h5 id="instanceof"><a href="#instanceof" class="headerlink" title="instanceof"></a><strong>instanceof</strong></h5><ul><li>只能判断引用类型。</li><li>通过原型链查找来判断类型。</li></ul><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(&#123;&#125; <span class="keyword">instanceof</span> <span class="title class_">Object</span>); <span class="comment">// true</span></span><br></pre></td></tr></table></figure><h5 id="Object-prototype-toString-call"><a href="#Object-prototype-toString-call" class="headerlink" title="Object.prototype.toString.call()"></a><strong>Object.prototype.toString.call()</strong></h5><ul><li>一种Object原型上的方法。</li></ul><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="title class_">Object</span>.<span class="property"><span class="keyword">prototype</span></span>.<span class="property">toString</span>.<span class="title function_">call</span>([])); <span class="comment">// &quot;[object Array]&quot;</span></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="title class_">Object</span>.<span class="property"><span class="keyword">prototype</span></span>.<span class="property">toString</span>.<span class="title function_">call</span>(<span class="variable language_">arguments</span>)); <span class="comment">// &quot;[object Argument]&quot;</span></span><br></pre></td></tr></table></figure><h5 id="Array-isArray"><a href="#Array-isArray" class="headerlink" title="Array.isArray()"></a><strong>Array.isArray()</strong></h5><ul><li>一个隶属于 <code>Array</code> 构造函数的静态方法。</li></ul><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> arr = []</span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="title class_">Array</span>.<span class="title function_">isArray</span>(arr)); <span class="comment">// true</span></span><br></pre></td></tr></table></figure><p>以上便是 <strong>typeof</strong>、<strong>instanceof</strong>、<strong>Object.prototype.toString.call()</strong>、<strong>Array.isArray()</strong> 这四种类型判断。虽然我说其中<code>Object.prototype.toString()</code>的判断最为完美全面，但在实际应用之中它们各有优劣之处，应用场景也各有不同。</p><h5 id="相关知识"><a href="#相关知识" class="headerlink" title="相关知识"></a>相关知识</h5><p>数组：[[判断数据数组4种方法]]</p>]]></content>
+      
+      
+      <categories>
+          
+          <category> js </category>
+          
+      </categories>
+      
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>宏任务和微任务</title>
+      <link href="/post/3MY8011.html"/>
+      <url>/post/3MY8011.html</url>
+      
+        <content type="html"><![CDATA[]]></content>
+      
+      
+      <categories>
+          
+          <category> js </category>
+          
+      </categories>
+      
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>展开运算符</title>
+      <link href="/post/HKS4KY.html"/>
+      <url>/post/HKS4KY.html</url>
+      
+        <content type="html"><![CDATA[<blockquote><p>[!note] 用来展开数组（其实也是对象）、对象</p></blockquote><p>![[Pasted image 20260126211309.png]]</p><h4 id="剩余参数和展开运算符"><a href="#剩余参数和展开运算符" class="headerlink" title="剩余参数和展开运算符"></a>剩余参数和展开运算符</h4><p>剩余参数：rest（收集参数）只能在函数最后一个参数使用<br>展开运算符：spread（发放、展开参数）且可在任意位置使用<br>![[Pasted image 20260126211352.png]]</p>]]></content>
+      
+      
+      <categories>
+          
+          <category> js </category>
+          
+      </categories>
+      
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>字符串方法问题</title>
+      <link href="/post/N69RG.html"/>
+      <url>/post/N69RG.html</url>
+      
+        <content type="html"><![CDATA[<p><a href="https://fe.ecool.fun/knowledge-learn">https://fe.ecool.fun/knowledge-learn</a></p><h2 id="常见考点"><a href="#常见考点" class="headerlink" title="常见考点"></a>常见考点</h2><h3 id="1-基本字符串方法"><a href="#1-基本字符串方法" class="headerlink" title="1. 基本字符串方法"></a>1. <strong>基本字符串方法</strong></h3><ul><li><code>charAt</code> 和 <code>charCodeAt</code> 的区别是什么？如何使用它们获取字符串中某个字符或字符的 Unicode 编码？<ul><li>前面是用来获取字符串中某个下标的字符，<span style="font-size: 20px; color: orange">返回字符</span>，后者是获取某个位置字符的编码，<span style="font-size: 20px; color: orange">返回编码</span></li></ul></li><li>如何通过 <code>concat</code> 拼接字符串？与 <code>+</code> 和模板字符串拼接相比有什么优缺点？<ul><li>concat 拼写字符串可以一次传入多个字符串，实现链式链接，但是 <code>+</code>方便书写，而且可读性强，所见即所得。</li></ul></li></ul><h3 id="2-查找与判断"><a href="#2-查找与判断" class="headerlink" title="2. 查找与判断"></a>2. <strong>查找与判断</strong></h3><ul><li><code>indexOf</code>、<code>lastIndexOf</code> 和 <code>includes</code> 的区别是什么？这些方法在字符串查找中如何选择？<ul><li>indexOf 是查找 子字符串 在字符串中的<span style="font-size: 20px; color: orange">第一次</span>出现的位置。<span style="font-size: 20px; color: orange">返回下标</span></li><li>lastIndexOf(“a”) 查找 a 在字符串中<span style="font-size: 20px; color: orange">最后出现</span>的位置</li></ul></li><li>如何使用 <code>startsWith</code> 和 <code>endsWith</code> 判断字符串的开头或结尾内容？<ul><li>省</li></ul></li></ul><h3 id="3-提取子字符串"><a href="#3-提取子字符串" class="headerlink" title="3. 提取子字符串"></a>3. <strong>提取子字符串</strong></h3><ul><li><code>slice</code>、<code>substring</code> 和 <code>substr</code> 的区别是什么？在什么情况下使用哪种方法？<ul><li><code>slice</code> 和 <code>substring</code>的参数都是<span style="font-size: 20px; color: orange">绝对定位</span>的，  <code>substr</code>第二个参数（长度）是从第一个参数开始算起<span style="font-size: 20px; color: orange">相对定位</span>，<span style="font-size: 20px; color: orange">返回字符串</span></li><li><code>slice</code><span style="font-size: 20px; color: orange">支持负数 </span>，<code>substring</code>第二个参数可以小于第一个参数，<span style="font-size: 20px; color: orange">自动反转</span></li></ul></li><li>你会如何使用 <code>slice</code> 实现字符串的反转？<ul><li>通过递归 然后使用<code>slice(-1)</code>, 实际开发中使用<code>split(&#39;&#39;).reverse().join(&#39;&#39;)</code></li></ul></li></ul><h3 id="4-大小写转换"><a href="#4-大小写转换" class="headerlink" title="4. 大小写转换"></a>4. <strong>大小写转换</strong></h3><ul><li>如何使用 <code>toUpperCase</code> 和 <code>toLowerCase</code> 实现字符串大小写转换？</li><li>如何实现一个首字母大写的函数？比如将 <code>&quot;hello world&quot;</code> 转换为 <code>&quot;Hello World&quot;</code>？<ul><li><code>str[0].toUpperCase() + str.substr(1,5) + str.[6].toUpperCase + str.substr(7)</code></li><li><span style="font-size: 20px; color: orange">返回字符串</span></li></ul></li></ul><h3 id="5-字符串替换"><a href="#5-字符串替换" class="headerlink" title="5. 字符串替换"></a>5. <strong>字符串替换</strong></h3><ul><li><code>replace</code> 和 <code>replaceAll</code> 的区别是什么？在什么场景下需要使用 <code>replaceAll</code>？<ul><li>匹配一个和匹配所有，把字符串中<span style="font-size: 20px; color: orange">第一个字符串替换成第二个字符串</span></li></ul></li><li><code>replace</code> 中的正则表达式如何实现全局替换？如何在替换中捕获匹配的内容并进行替换？<ul><li><code>replace</code><span style="font-size: 20px; color: orange">替换</span>,<code>match</code><span style="font-size: 20px; color: orange">返回对象，包括下标</span>,<code>search</code><span style="font-size: 20px; color: orange">返回下标</span>这三个功能和 <code>search</code> 查找类似，但是 <code>indeOf</code> 不能传入正则</li></ul></li></ul><h3 id="6-去除空白字符"><a href="#6-去除空白字符" class="headerlink" title="6. 去除空白字符"></a>6. <strong>去除空白字符</strong></h3><ul><li><code>trim</code>、<code>trimStart</code> 和 <code>trimEnd</code> 的区别是什么？如何用它们去除字符串开头strimStart或结尾的空格trimEnd？</li><li>如何去除字符串中所有的空白字符？是否可以使用正则表达式实现？</li></ul><h3 id="7-分割与连接"><a href="#7-分割与连接" class="headerlink" title="7. 分割与连接"></a>7. <strong>分割与连接</strong></h3><ul><li><code>split</code> 的用法是什么？如何使用它将字符串按特定分隔符转换为数组？<ul><li><span style="font-size: 20px; color: orange">使用正则表达式</span></li></ul></li></ul><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> list = <span class="string">&quot;apples,bananas;cherries&quot;</span> </span><br><span class="line"><span class="keyword">const</span> fruits = list.<span class="title function_">split</span>(<span class="regexp">/[,;]/</span>) </span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(fruits); <span class="comment">// 输出结果：[&quot;apples&quot;, &quot;bananas&quot;, &quot;cherries&quot;]</span></span><br></pre></td></tr></table></figure><ul><li>如何使用 <code>split</code> 和 <code>join</code> 方法实现字符串的重组，比如反转单词顺序等？</li></ul><h3 id="8-重复与填充"><a href="#8-重复与填充" class="headerlink" title="8. 重复与填充"></a>8. <strong>重复与填充</strong></h3><ul><li><code>repeat</code> 方法的作用是什么？如何使用它生成一个重复的字符串？<ul><li>repeat(num), num表示重复的次数。可以字符串转数字</li></ul></li><li><code>padStart</code> 和 <code>padEnd</code> 如何实现字符串的填充？请举例说明如何用它们补齐字符串的长度。</li></ul><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">&#x27;x&#x27;</span>.<span class="title function_">padEnd</span>(<span class="number">5</span>, <span class="string">&#x27;ab&#x27;</span>) <span class="comment">// &#x27;xabab&#x27;</span></span><br></pre></td></tr></table></figure><h3 id="9-模板字符串"><a href="#9-模板字符串" class="headerlink" title="9. 模板字符串"></a>9. <strong>模板字符串</strong></h3><ul><li>什么是模板字符串？如何通过模板字符串来插入变量和表达式？</li><li>模板字符串中的 <code>$&#123;&#125;</code> 语法还能做什么操作？比如进行数学运算或调用函数。</li></ul><h3 id="10-高级字符串操作"><a href="#10-高级字符串操作" class="headerlink" title="10. 高级字符串操作"></a>10. <strong>高级字符串操作</strong></h3><ul><li>如何使用正则表达式 <code>match</code>、<code>matchAll</code>、<code>search</code> 和 <code>split</code> 方法处理复杂文本？</li><li>如何通过 <code>replace</code> 和回调函数来动态替换内容？比如替换字符串中的占位符。</li></ul><h3 id="11-Unicode-与编码"><a href="#11-Unicode-与编码" class="headerlink" title="11. Unicode 与编码"></a>11. <strong>Unicode 与编码</strong></h3><ul><li>如何判断一个字符串是否包含某个 Unicode 字符？如何使用 <code>codePointAt</code> 和 <code>fromCodePoint</code> 处理 Unicode 编码？</li><li><code>normalize</code> 的作用是什么？在多语言字符处理中，它如何处理不同编码方式的字符？</li></ul><h3 id="12-字符串比较"><a href="#12-字符串比较" class="headerlink" title="12. 字符串比较"></a>12. <strong>字符串比较</strong></h3><ul><li>JavaScript 中字符串是如何比较的？<code>localeCompare</code> 的作用是什么？</li><li>如何根据特定的语言或地区对字符串进行排序？<code>localeCompare</code> 如何实现多语言排序？</li></ul><h3 id="13-字符串操作练习题"><a href="#13-字符串操作练习题" class="headerlink" title="13. [[字符串操作练习题]]"></a>13. <strong>[[字符串操作练习题]]</strong></h3><ul><li>如何实现字符串的反转？</li><li>如何判断一个字符串是否为回文？</li><li>给定一个句子，如何将每个单词的首字母大写？</li><li>如何提取字符串中的数字并进行求和？</li></ul><h3 id="14-处理特殊字符"><a href="#14-处理特殊字符" class="headerlink" title="14. 处理特殊字符"></a>14. <strong>处理特殊字符</strong></h3><ul><li>如何处理字符串中的特殊字符，比如换行符、制表符等？如何用正则表达式匹配这些字符？</li><li>在 HTML 中如何转义特殊字符？如 <code>&amp;</code> 转为 <code>&amp;amp;</code> 等？</li></ul><h3 id="15-性能与优化"><a href="#15-性能与优化" class="headerlink" title="15. 性能与优化"></a>15. <strong>性能与优化</strong></h3><ul><li>如果有大量字符串拼接任务，使用 <code>+</code> 和 <code>Array.join</code> 拼接的性能有何不同？</li><li>在字符串较长或操作频繁的情况下，是否有其他高效的字符串操作方法或工具可以推荐？</li></ul>]]></content>
+      
+      
+      <categories>
+          
+          <category> js </category>
+          
+      </categories>
+      
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>垃圾回收机制</title>
+      <link href="/post/1S0DXG5.html"/>
+      <url>/post/1S0DXG5.html</url>
+      
+        <content type="html"><![CDATA[<p>![[Pasted image 20260126162119.png]]</p><h2 id="垃圾回收算法"><a href="#垃圾回收算法" class="headerlink" title="垃圾回收算法"></a>垃圾回收算法</h2><h3 id="引用技术法"><a href="#引用技术法" class="headerlink" title="引用技术法"></a>引用技术法</h3><blockquote><p>只有ie浏览器这样，现在都是用标记清除法</p></blockquote><h4 id="缺点：内存泄露"><a href="#缺点：内存泄露" class="headerlink" title="缺点：内存泄露"></a>缺点：内存泄露</h4><p>![[Pasted image 20260126162706.png]]</p><h3 id="标记清除法"><a href="#标记清除法" class="headerlink" title="标记清除法"></a>标记清除法</h3><p>![[Pasted image 20260126162813.png]]</p><h4 id="优点：解决循环引用无法回收"><a href="#优点：解决循环引用无法回收" class="headerlink" title="优点：解决循环引用无法回收"></a>优点：解决循环引用无法回收</h4><p>![[Pasted image 20260126162903.png]]</p>]]></content>
+      
+      
+      <categories>
+          
+          <category> js </category>
+          
+      </categories>
+      
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>变量提升</title>
+      <link href="/post/R80HGD.html"/>
+      <url>/post/R80HGD.html</url>
+      
+        <content type="html"><![CDATA[<p>![[Pasted image 20260126200136.png]]<br>其实同样的，函数有也有函数提升</p><blockquote><p>只提升声明，不提升值和函数调用，所以以下是错误的</p></blockquote><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="title function_">fun</span>()</span><br><span class="line"><span class="keyword">var</span> fun = <span class="keyword">function</span>(<span class="params"></span>)&#123;<span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&quot;函数调用提升&quot;</span>)&#125; <span class="comment">// TypeError:not a function</span></span><br></pre></td></tr></table></figure>]]></content>
+      
+      
+      <categories>
+          
+          <category> js </category>
+          
+      </categories>
+      
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>判断数据数组4种方法</title>
+      <link href="/post/399ZSBQ.html"/>
+      <url>/post/399ZSBQ.html</url>
+      
+        <content type="html"><![CDATA[<p>太棒了！作为小白，理解 JavaScript 中“判断数组”这件事，其实就像是在生活中**“通过不同方式确认一个包裹是不是快递”**。</p><p>有些方法看外壳（构造函数），有些方法看基因（原型链），有些方法则是直接扫条形码（官方 API）。</p><hr><h2 id="1-Array-isArray-内置隐藏标签-Class"><a href="#1-Array-isArray-内置隐藏标签-Class" class="headerlink" title="1. Array.isArray() (内置隐藏标签[[Class]])"></a>1. <code>Array.isArray()</code> (内置隐藏标签<code>[[Class]]</code>)</h2><p>这是 ES5 专门为判断数组增加的方法。它就像是<strong>官方提供的扫码枪</strong>，直接告诉你：是 (true) 还是不是 (false)。</p><ul><li><p><strong>语法：</strong> <code>Array.isArray(待检测的变量)</code></p></li><li><p><strong>优点：</strong> 简单直观，不会受到复杂环境（比如网页里的 iframe）的影响。</p></li></ul><p>JavaScript</p><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">let fruits = [&#x27;apple&#x27;, &#x27;banana&#x27;];</span><br><span class="line">let name = &#x27;Jack&#x27;;</span><br><span class="line"></span><br><span class="line">console.log(Array.isArray(fruits)); // 输出: true</span><br><span class="line">console.log(Array.isArray(name));   // 输出: false</span><br></pre></td></tr></table></figure><hr><h2 id="2-instanceof-运算符-查原型链"><a href="#2-instanceof-运算符-查原型链" class="headerlink" title="2. instanceof 运算符 (查原型链)"></a>2. <code>instanceof</code> 运算符 (查原型链)</h2><p><code>instanceof</code> 用来检查一个对象是否是由某个构造函数创建的。翻译成大白话就是：<strong>“你是不是 Array 这个家族的后代？”</strong></p><ul><li><p><strong>语法：</strong> <code>变量 instanceof Array</code></p></li><li><p><strong>优点：</strong> 语法非常符合英文逻辑。</p></li><li><p><strong>缺点：</strong> 如果你的网页里嵌套了 <code>iframe</code>（多个窗口环境），不同窗口的 Array 家族可能互不认亲，这时候会失效。</p></li></ul><p>JavaScript</p><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> colors = [<span class="string">&#x27;red&#x27;</span>, <span class="string">&#x27;blue&#x27;</span>];</span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(colors <span class="keyword">instanceof</span> <span class="title class_">Array</span>); <span class="comment">// 输出: true</span></span><br></pre></td></tr></table></figure><h3 id="不安全：当“家谱”被篡改时（手动修改原型）"><a href="#不安全：当“家谱”被篡改时（手动修改原型）" class="headerlink" title="不安全：当“家谱”被篡改时（手动修改原型）"></a>不安全：当“家谱”被篡改时（手动修改原型）</h3><p><code>instanceof</code> 是通过检查<strong>原型链</strong>来判断的。如果我们把一个数组的原型链强行改掉，<code>instanceof</code> 就会“眼瞎”，但 <code>Array.isArray</code> 依然能一眼认出来。</p><p>JavaScript</p><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> myArr = [<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>];</span><br><span class="line"></span><br><span class="line"><span class="comment">// 正常情况下</span></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(myArr <span class="keyword">instanceof</span> <span class="title class_">Array</span>); <span class="comment">// true</span></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="title class_">Array</span>.<span class="title function_">isArray</span>(myArr));   <span class="comment">// true</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// --- 骚操作开始：强行修改原型 ---</span></span><br><span class="line"><span class="comment">// 我们把这个数组的“祖先”改成一个普通对象，让它脱离 Array 家族</span></span><br><span class="line"><span class="title class_">Object</span>.<span class="title function_">setPrototypeOf</span>(myArr, <span class="title class_">Object</span>.<span class="property"><span class="keyword">prototype</span></span>); </span><br><span class="line"></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(myArr <span class="keyword">instanceof</span> <span class="title class_">Array</span>); <span class="comment">// false (它不认这个后代了)</span></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="title class_">Array</span>.<span class="title function_">isArray</span>(myArr));   <span class="comment">// true  (依然认定它是数组)</span></span><br></pre></td></tr></table></figure><p><strong>结论：</strong> <code>instanceof</code> 容易被欺骗，而 <code>Array.isArray</code> 看的是“本质”。</p><hr><h2 id="3-Object-prototype-toString-call"><a href="#3-Object-prototype-toString-call" class="headerlink" title="3. Object.prototype.toString.call()"></a>3. <code>Object.prototype.toString.call()</code></h2><p>这被开发者戏称为**“终极核武器”**。无论是什么类型（数组、对象、字符串、数字、甚至是 null），它都能准确识别出最原始的“基因标签”。</p><ul><li><p><strong>逻辑：</strong> 每一个 JS 对象内部都有一个标签，数组的标签是 <code>[object Array]</code>。</p></li><li><p><strong>语法：</strong> <code>Object.prototype.toString.call(待检测的变量)</code></p></li><li><p><strong>适用场景：</strong> 当你需要写一个非常严谨的库，或者不仅想判断数组，还想判断日期、正则等各种复杂类型时。</p></li></ul><p>JavaScript</p><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">let arr = [1, 2, 3];</span><br><span class="line">console.log(Object.prototype.toString.call(arr)); </span><br><span class="line">// 输出: &quot;[object Array]&quot;</span><br><span class="line"></span><br><span class="line">// 判断是否是数组：</span><br><span class="line">if (Object.prototype.toString.call(arr) === &#x27;[object Array]&#x27;) &#123;</span><br><span class="line">    console.log(&quot;这绝对是个数组！&quot;);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><hr><h2 id="4-constructor-arr-constructor只是名片"><a href="#4-constructor-arr-constructor只是名片" class="headerlink" title="4. constructor(arr.constructor只是名片)"></a>4. <code>constructor</code>(arr.constructor只是名片)</h2><p>每个对象都有一个 <code>constructor</code> 属性，指向它的构造函数。就像查看一个人的身份证，看他父亲是谁。</p><ul><li><p><strong>语法：</strong> <code>变量.constructor === Array</code></p></li><li><p><strong>风险：</strong> 这个“身份证”是可以被伪造的。如果有人手动改了变量的 constructor 属性，判断就不准了。</p></li></ul><p>JavaScript</p><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">let nums = [1, 2];</span><br><span class="line">console.log(nums.constructor === Array); // 输出: true</span><br></pre></td></tr></table></figure><hr><h2 id="递进关系"><a href="#递进关系" class="headerlink" title="递进关系"></a>递进关系</h2><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> arr = [<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>];</span><br><span class="line"></span><br><span class="line"><span class="comment">// 情况一：我只改名片，不改血缘</span></span><br><span class="line">arr.<span class="property">constructor</span> = <span class="title class_">String</span>; </span><br><span class="line"></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(arr.<span class="property">constructor</span> === <span class="title class_">Array</span>); <span class="comment">// false (名片改了)</span></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(arr <span class="keyword">instanceof</span> <span class="title class_">Array</span>);      <span class="comment">// true  (DNA 还在，还是 Array 家族的)</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 情况二：我改了血缘（原型链）</span></span><br><span class="line"><span class="title class_">Object</span>.<span class="title function_">setPrototypeOf</span>(arr, <span class="title class_">Object</span>.<span class="property"><span class="keyword">prototype</span></span>); </span><br><span class="line"></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(arr <span class="keyword">instanceof</span> <span class="title class_">Array</span>);      <span class="comment">// false (祖先里找不到 Array 了)</span></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="title class_">Array</span>.<span class="title function_">isArray</span>(arr));        <span class="comment">// true  (扫码枪：DNA 没变，它本质还是数组！)</span></span><br></pre></td></tr></table></figure><h2 id="5-计算机专业视角的深度总结"><a href="#5-计算机专业视角的深度总结" class="headerlink" title="5. 计算机专业视角的深度总结"></a>5. 计算机专业视角的深度总结</h2><ul><li><p><strong><code>instanceof</code></strong> 是 <strong>关系型判断</strong>。它利用了原型链的遍历。</p></li><li><p><strong><code>constructor</code></strong> 是 <strong>元数据（Metadata）检查</strong>。它利用的是对象属性的继承。</p></li><li><p><strong><code>Array.isArray()</code></strong> 是 <strong>标志位（Internal Flag）检查</strong>。它检查的是 V8 引擎在内存中给该对象打上的 <code>[[Class]]</code> 内部标签。</p></li></ul><blockquote><p><strong>结论：</strong> &gt; 只要涉及原型链，都会因为 <strong>“环境隔离”</strong>（如 Iframe）而变得不可靠。 作为开发者，如果你要判断数组，<strong>请把 <code>instanceof</code> 和 <code>constructor</code> 都放进故纸堆</strong>，只用 <code>Array.isArray()</code></p></blockquote>]]></content>
+      
+      
+      <categories>
+          
+          <category> js </category>
+          
+      </categories>
+      
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>函数参数</title>
+      <link href="/post/3C5YBAN.html"/>
+      <url>/post/3C5YBAN.html</url>
+      
+        <content type="html"><![CDATA[<h2 id="动态参数"><a href="#动态参数" class="headerlink" title="动态参数"></a>动态参数</h2><p>![[Pasted image 20260126204715.png]]</p><ol><li>当不确定传递多少个实参的时候，我们怎么办？<ul><li>使用<code>arguments</code>动态参数</li></ul></li><li>arguments是什么？<ul><li>类数组</li><li>它只存在与函数内</li></ul></li></ol><h2 id="剩余参数"><a href="#剩余参数" class="headerlink" title="剩余参数"></a>剩余参数</h2><p>剩余参数允许我们将一个不定数量的参数表示为一个数组<br>![[Pasted image 20260126205604.png]]</p><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt;[]</span><br><span class="line">&gt;&gt;[<span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>]</span><br></pre></td></tr></table></figure><p>![[Pasted image 20260126205547.png]]<br>优先使用剩余参数，功能更强大、方便。</p><p>相关内容<br>[[展开运算符]]<br>箭头函数没有arguments参数，有 剩余参数 …args</p>]]></content>
+      
+      
+      <categories>
+          
+          <category> js </category>
+          
+      </categories>
+      
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>作用域</title>
+      <link href="/post/1X112HW.html"/>
+      <url>/post/1X112HW.html</url>
+      
+        <content type="html"><![CDATA[<p>只有函数才能创建作用域<br>对象字面量不创建作用域</p><p>箭头函数<br>![[Pasted image 20260126215356.png]]</p><p>![[Pasted image 20260126215626.png]]</p><p>![[Pasted image 20260126215444.png]]</p>]]></content>
+      
+      
+      <categories>
+          
+          <category> js </category>
+          
+      </categories>
+      
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>【对象】属性增删</title>
+      <link href="/post/1CRRY8H.html"/>
+      <url>/post/1CRRY8H.html</url>
+      
+        <content type="html"><![CDATA[<h2 id="添加属性"><a href="#添加属性" class="headerlink" title="添加属性"></a>添加属性</h2><h4 id="1-直接添加：点（-）和方括号（-）"><a href="#1-直接添加：点（-）和方括号（-）" class="headerlink" title="1. 直接添加：点（.）和方括号（[]）"></a>1. 直接添加：点（<code>.</code>）和方括号（<code>[]</code>）</h4><p>这是日常开发中最基础的方式，支持两种语法：<strong>点语法</strong>（<code>.</code>）和<strong>方括号语法</strong>（<code>[]</code>）</p><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 初始化空对象</span></span><br><span class="line"><span class="keyword">const</span> person = &#123;&#125;;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 1. 点语法添加（合法标识符）</span></span><br><span class="line">person.<span class="property">name</span> = <span class="string">&#x27;小明&#x27;</span>;</span><br><span class="line">person.<span class="property">age</span> = <span class="number">18</span>;</span><br><span class="line">person.<span class="property">sayHi</span> = <span class="keyword">function</span>(<span class="params"></span>) &#123;</span><br><span class="line">  <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">`Hi, I&#x27;m <span class="subst">$&#123;<span class="variable language_">this</span>.name&#125;</span>`</span>);</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 2. 方括号语法添加（支持特殊场景）</span></span><br><span class="line"><span class="comment">// 场景1：属性名有空格/特殊字符</span></span><br><span class="line">person[<span class="string">&#x27;user name&#x27;</span>] = <span class="string">&#x27;小红&#x27;</span>; <span class="comment">// 空格</span></span><br><span class="line">person[<span class="string">&#x27;age-2026&#x27;</span>] = <span class="number">20</span>; <span class="comment">// 特殊字符</span></span><br><span class="line">person[<span class="string">&#x27;123id&#x27;</span>] = <span class="string">&#x27;abc123&#x27;</span>; <span class="comment">// 数字开头</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 场景2：动态属性名（变量作为属性名）</span></span><br><span class="line"><span class="keyword">const</span> key = <span class="string">&#x27;gender&#x27;</span>;</span><br><span class="line">person[key] = <span class="string">&#x27;男&#x27;</span>; <span class="comment">// 等价于 person.gender = &#x27;男&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(person);</span><br><span class="line"><span class="comment">// 输出：&#123;</span></span><br><span class="line"><span class="comment">//   name: &#x27;小明&#x27;,</span></span><br><span class="line"><span class="comment">//   age: 18,</span></span><br><span class="line"><span class="comment">//   sayHi: [Function],</span></span><br><span class="line"><span class="comment">//   &#x27;user name&#x27;: &#x27;小红&#x27;,</span></span><br><span class="line"><span class="comment">//   &#x27;age-2026&#x27;: 20,</span></span><br><span class="line"><span class="comment">//   &#x27;123id&#x27;: &#x27;abc123&#x27;,</span></span><br><span class="line"><span class="comment">//   gender: &#x27;男&#x27;</span></span><br><span class="line"><span class="comment">// &#125;</span></span><br></pre></td></tr></table></figure><h4 id="2-批量添加（Object-assign-）"><a href="#2-批量添加（Object-assign-）" class="headerlink" title="2. 批量添加（Object.assign ()）"></a>2. 批量添加（Object.assign ()）</h4><h5 id="核心特征："><a href="#核心特征：" class="headerlink" title="核心特征："></a>核心特征：</h5><ul><li>第一个参数是「目标对象」（要添加属性的对象）；</li><li>后续参数是「源对象」（提供属性的对象）；</li><li>会直接修改目标对象，也支持链式合并。</li></ul><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> person = &#123; <span class="attr">name</span>: <span class="string">&#x27;小明&#x27;</span> &#125;;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 批量添加属性</span></span><br><span class="line"><span class="title class_">Object</span>.<span class="title function_">assign</span>(person, &#123;</span><br><span class="line">  <span class="attr">age</span>: <span class="number">18</span>,</span><br><span class="line">  <span class="attr">gender</span>: <span class="string">&#x27;男&#x27;</span>,</span><br><span class="line">  <span class="attr">address</span>: <span class="string">&#x27;北京&#x27;</span></span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 合并多个源对象</span></span><br><span class="line"><span class="title class_">Object</span>.<span class="title function_">assign</span>(person, &#123; <span class="attr">phone</span>: <span class="string">&#x27;13800138000&#x27;</span> &#125;, &#123; <span class="attr">email</span>: <span class="string">&#x27;xiaoming@test.com&#x27;</span> &#125;);</span><br><span class="line"></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(person);</span><br><span class="line"><span class="comment">// 输出：&#123; name: &#x27;小明&#x27;, age: 18, gender: &#x27;男&#x27;, address: &#x27;北京&#x27;, phone: &#x27;13800138000&#x27;, email: &#x27;xiaoming@test.com&#x27; &#125;</span></span><br></pre></td></tr></table></figure><h4 id="3-配置化添加（Object-defineProperty-Object-defineProperties-）"><a href="#3-配置化添加（Object-defineProperty-Object-defineProperties-）" class="headerlink" title="#### 3. 配置化添加（Object.defineProperty ()&#x2F;Object.defineProperties ()）"></a>#### 3. 配置化添加（Object.defineProperty ()&#x2F;Object.defineProperties ()）</h4><p>如果需要精细控制属性的行为（比如是否可修改、是否可枚举、是否可删除），用这两个方法，适合对属性有 “权限控制” 的场景。</p><h5 id="核心配置项："><a href="#核心配置项：" class="headerlink" title="核心配置项："></a>核心配置项：</h5><ul><li><code>value</code>：属性值；</li><li><code>writable</code>：是否可修改（默认 <code>false</code>）；</li><li><code>enumerable</code>：是否可枚举（比如 <code>for...in</code>&#x2F;<code>Object.keys()</code> 能否遍历到，默认 <code>false</code>）；</li><li><code>configurable</code>：是否可删除 &#x2F; 修改配置（默认 <code>false</code>）。</li></ul><h2 id="删除属性"><a href="#删除属性" class="headerlink" title="删除属性"></a>删除属性</h2><p>只有两种核心方式：<code>delete</code> 操作符（常用）和「配置化清空」（特殊场景），重点注意 <code>delete</code> 的使用规则。</p><h4 id="1-delete-操作符（最常用）"><a href="#1-delete-操作符（最常用）" class="headerlink" title="1. delete 操作符（最常用）"></a>1. delete 操作符（最常用）</h4><p>这是删除对象自有属性的标准方式，语法：<code>delete 对象.属性</code> 或 <code>delete 对象[属性名]</code>。</p><h5 id="核心规则："><a href="#核心规则：" class="headerlink" title="核心规则："></a>核心规则：</h5><ul><li>只能删除对象的「自有属性」（继承的属性删不掉）；</li><li>删除成功返回 <code>true</code>，删除不存在的属性也返回 <code>true</code>（无报错）；</li><li>无法删除 <code>configurable: false</code> 的属性（严格模式报错，非严格模式返回 <code>false</code>）。</li></ul><h5 id="注意：无法删除原型链上的继承属性"><a href="#注意：无法删除原型链上的继承属性" class="headerlink" title="注意：无法删除原型链上的继承属性"></a>注意：无法删除原型链上的继承属性</h5><p><code>delete</code> 只能删自有属性，继承的属性（比如 <code>toString</code>、<code>hasOwnProperty</code>）删不掉：</p><h4 id="2-赋值为-undefined（特殊场景“伪删除”）"><a href="#2-赋值为-undefined（特殊场景“伪删除”）" class="headerlink" title="2. 赋值为 undefined（特殊场景“伪删除”）"></a>2. 赋值为 undefined（特殊场景“伪删除”）</h4><h5 id="适用场景："><a href="#适用场景：" class="headerlink" title="适用场景："></a>适用场景：</h5><ul><li>不想改变对象的属性结构，仅清空值；</li><li>避免 <code>delete</code> 带来的轻微性能损耗（高频操作场景）</li></ul>]]></content>
+      
+      
+      <categories>
+          
+          <category> js </category>
+          
+      </categories>
+      
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>【对象】创建方法</title>
+      <link href="/post/263C9R1.html"/>
+      <url>/post/263C9R1.html</url>
+      
+        <content type="html"><![CDATA[<h2 id="构造函数和工厂函数"><a href="#构造函数和工厂函数" class="headerlink" title="构造函数和工厂函数"></a>构造函数和工厂函数</h2><blockquote><p>博客链接： <a href="https://blog.csdn.net/lph159/article/details/146407396">https://blog.csdn.net/lph159/article/details/146407396</a></p></blockquote><p>![[Pasted image 20260117130850.png]]<br>![[Pasted image 20260117130903.png]]<br>构造函数：依赖new 和原型链（class创建对象是 构造函数+原型链封装 的“语法糖”，）<br>工厂函数：function createPerson(){ return {…}} ，函数体内部直接return对象： return {}</p><h2 id="对象字面量-和Class"><a href="#对象字面量-和Class" class="headerlink" title="对象字面量 和Class"></a>对象字面量 和<code>Class</code></h2><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> a = &#123;&#125;;  <span class="comment">// 字面量</span></span><br><span class="line"><span class="title class_">Class</span> <span class="title class_">Person</span>&#123;  <span class="comment">// Class</span></span><br><span class="line"><span class="title function_">constructor</span>(<span class="params">name, age</span>)&#123; <span class="comment">// 定义数据</span></span><br><span class="line"><span class="variable language_">this</span>.<span class="property">name</span> = name;</span><br><span class="line"><span class="variable language_">this</span>.<span class="property">age</span> = age;</span><br><span class="line">&#125;</span><br><span class="line"><span class="title function_">sayHi</span>(<span class="params"></span>)&#123;</span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">`hi, i am <span class="subst">$&#123;<span class="variable language_">this</span>.name&#125;</span>`</span>);</span><br><span class="line">&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><h2 id="拓展-工具函数和构造函数"><a href="#拓展-工具函数和构造函数" class="headerlink" title="拓展:工具函数和构造函数"></a>拓展:工具函数和构造函数</h2><p>这里区分的场景是，</p><ol><li>工具函数：负责隐式转换类型 Number()</li><li>构造函数：负责包装对象 new Number()</li></ol><p>所以这里 new 似乎就有一种魔力？<br>new  的“魔力”：触发的 4 步底层执行逻辑</p><p>当函数前加  new  时，JS 引擎会强制该函数进入构造模式，自动执行以下 4 个步骤（这是普通函数调用没有的）：<br>1. 创建空对象：自动创建一个全新的空普通对象（ const obj &#x3D; {} ）。</p><p>2. 绑定原型链：将这个空对象的原型链指向构造函数的  prototype  属性（ obj.<strong>proto</strong> &#x3D; 构造函数.prototype ）。</p><ul><li>比如  new Number()  时，空对象的  <strong>proto</strong>  会指向  Number.prototype ，因此实例能访问  toFixed()  等方法。<br>​<br>3. 绑定  this  指向：将构造函数内部的  this  指向这个空对象，执行构造函数体的代码。</li><li>比如  Number  构造函数会把传入的参数处理后，挂载到  this  上作为属性。<br>​<br>4. 决定返回值：</li><li>如果构造函数没有显式返回对象类型的值（对象、数组、函数等），则自动返回第一步创建的对象；</li><li>如果构造函数显式返回了对象类型，则返回该对象（覆盖默认的新对象）</li></ul>]]></content>
+      
+      
+      <categories>
+          
+          <category> js </category>
+          
+      </categories>
+      
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>Promise</title>
+      <link href="/post/1AB26GC.html"/>
+      <url>/post/1AB26GC.html</url>
+      
+        <content type="html"><![CDATA[<p>Promise有静态方法 和 原型方法 两种：</p><ul><li><strong>静态方法</strong> → 挂在<strong>构造函数本身</strong>上，<strong>不需要 new 实例</strong>就能用；</li><li><strong>原型方法</strong> → 挂在<strong>构造函数.prototype</strong> 上，<strong>必须先有实例</strong>才能用。</li></ul><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">Promise</span><br><span class="line">├─ 静态</span><br><span class="line">│  ├─ resolve / reject  （立即定态）</span><br><span class="line">│  ├─ all               （全部成功）</span><br><span class="line">│  ├─ allSettled        （全部结束）</span><br><span class="line">│  ├─ race              （先到先得）</span><br><span class="line">│  └─ any               （一个成功）</span><br><span class="line">└─ 原型</span><br><span class="line">   ├─ then              （成功+失败）</span><br><span class="line">   ├─ catch             （仅失败）</span><br><span class="line">   └─ finally           （扫尾）</span><br></pre></td></tr></table></figure><h2 id="静态方法"><a href="#静态方法" class="headerlink" title="静态方法"></a>静态方法</h2><p>官方规定好的“工厂函数”——<strong>不要自己 <code>new</code></strong></p><p><strong>内部已经 <code>new</code> 过了</strong>，返回的就是<strong>现成实例</strong>，直接拿实例用：</p><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> p = <span class="title class_">Promise</span>.<span class="title function_">resolve</span>(<span class="number">42</span>); <span class="comment">// 内部：new Promise(...) 再 resolve(42)</span></span><br><span class="line">p.<span class="title function_">then</span>(<span class="variable language_">console</span>.<span class="property">log</span>);           <span class="comment">// 直接链式</span></span><br></pre></td></tr></table></figure><h4 id="Promise-finally"><a href="#Promise-finally" class="headerlink" title="Promise.finally()"></a>Promise.finally()</h4><p><code>finally</code>方法用于指定不管 Promise 对象最后状态如何，都会执行的操作。该方法是 ES2018 引入标准的。<br>下面来看例子，服务器使用 Promise 处理请求，然后使用<code>finally</code>方法关掉服务器。</p><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">server.<span class="title function_">listen</span>(port)</span><br><span class="line">.<span class="title function_">then</span>(<span class="keyword">function</span> (<span class="params"></span>) &#123; <span class="comment">// ... &#125;) </span></span><br><span class="line">.<span class="title function_">finally</span>(server.<span class="property">stop</span>);</span><br></pre></td></tr></table></figure><h4 id="Promise-all-与逻辑"><a href="#Promise-all-与逻辑" class="headerlink" title="Promise.all() 与逻辑"></a>Promise.all() 与逻辑</h4><p><code>all</code>方法可以完成<strong>并行任务</strong>， 它接收一个每一项都是<code>promise</code>对象。当数组中所有的<code>promise</code>的状态都达到<code>resolved</code>时，<code>all</code>方法的状态就会变成<code>resolved</code>，如果有一个状态变成了<code>rejected</code>，那么<code>all</code>方法的状态就会变成<code>rejected</code>：<br>![[Pasted image 20260124183534.png]]<br>调用<code>all</code>方法时的结果成功的时候是回调函数的参数也是一个数组，这个数组按顺序保存着每一个promise对象<code>resolve</code>执行时的值。</p><h4 id="Promise-race"><a href="#Promise-race" class="headerlink" title="Promise.race()"></a>Promise.race()</h4><p><code>race</code>方法和<code>all</code>一样，接受的参数是一个每项都是<code>promise</code>的数组，但与<code>all</code>不同的是，当最先执行完的事件执行完之后，就直接返回该<code>promise</code>对象的值。</p><p>如果第一个<code>promise</code>对象状态变成<code>resolved</code>，那自身的状态变成了<code>resolved</code>；反之，第一个<code>promise</code>变成<code>rejected</code>，那自身状态就会变成<code>rejected</code>。<br>![[Pasted image 20260124183844.png]]<br>那么<code>race</code>方法有什么实际作用呢？当需要执行一个任务，超过多长时间就不做了，就可以用这个方法来解决：</p><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="title class_">Promise</span>.<span class="title function_">race</span>([promise1, <span class="title function_">timeOutPromise</span>(<span class="number">5000</span>)]).<span class="title function_">then</span>(<span class="function"><span class="params">res</span> =&gt;</span> <span class="variable language_">console</span>.<span class="title function_">log</span>(res))</span><br></pre></td></tr></table></figure><h4 id="Promise-allSettled"><a href="#Promise-allSettled" class="headerlink" title="Promise.allSettled()"></a>Promise.allSettled()</h4><p>Promise.allSettled 的语法及参数跟 Promise.all 类似，其参数接受一个 Promise 的数组，返回一个新的 Promise数组。唯一的不同在于，执行完之后不会失败，也就是说当 Promise.allSettled 全部处理完成后，我们可以拿到每个 Promise 的状态，而不管其是否处理成功。</p><p>下面使用 allSettled 实现的一段代码：<br>![[Pasted image 20260124184520.png]]<br>可以看到，Promise.allSettled 最后返回的是一个数组，记录传进来的参数中每个 Promise 的返回值，这就是和 all 方法不太一样的地方。</p><h4 id="Promise-any-或逻辑"><a href="#Promise-any-或逻辑" class="headerlink" title="Promise.any() 或逻辑"></a>Promise.any() 或逻辑</h4><p> any 方法返回一个 Promise，只要参数 Promise 实例有一个变成 fullfilled 状态，最后 any 返回的实例就会变成 fullfilled 状态；如果所有参数 Promise 实例都变成 rejected 状态，包装实例就会变成 rejected 状态。<br>![[Pasted image 20260124185105.png]]</p><blockquote><p>[!note] 返回值是一个值，不是数组！返回第一个fullfilled状态存储的值。</p></blockquote><p>如果有多个reject：</p><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="title class_">Promise</span>.<span class="title function_">any</span>([</span><br><span class="line">  <span class="title class_">Promise</span>.<span class="title function_">reject</span>(<span class="string">&#x27;e1&#x27;</span>),</span><br><span class="line">  <span class="title class_">Promise</span>.<span class="title function_">reject</span>(<span class="string">&#x27;e2&#x27;</span>)</span><br><span class="line">]).<span class="title function_">catch</span>(<span class="function"><span class="params">err</span> =&gt;</span> &#123;</span><br><span class="line">  <span class="variable language_">console</span>.<span class="title function_">log</span>(err.<span class="property">errors</span>); <span class="comment">// [&#x27;e1&#x27;, &#x27;e2&#x27;]  （AggregateError 的 errors 属性）</span></span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure><h2 id="原型方法"><a href="#原型方法" class="headerlink" title="原型方法"></a>原型方法</h2><p>官方<strong>没给你工厂</strong>，只给了<strong>构造函数</strong>——<strong>必须自己 <code>new</code></strong></p><ul><li><code>new Promise(executor)</code></li></ul><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> p = <span class="keyword">new</span> <span class="title class_">Promise</span>(<span class="function">(<span class="params">resolve, reject</span>) =&gt;</span> &#123; ... &#125;); <span class="comment">// 对</span></span><br><span class="line"><span class="keyword">const</span> p = <span class="title class_">Promise</span>(<span class="function">(<span class="params">resolve, reject</span>) =&gt;</span> &#123; ... &#125;);     <span class="comment">// ❌ 立即 TypeError</span></span><br></pre></td></tr></table></figure><h4 id="Promise-的参数怎么传？——只认一个-executor-函数"><a href="#Promise-的参数怎么传？——只认一个-executor-函数" class="headerlink" title="Promise 的参数怎么传？——只认一个 executor 函数"></a>Promise 的参数怎么传？——<strong>只认一个 executor 函数</strong></h4><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">new</span> <span class="title class_">Promise</span>(executor)</span><br></pre></td></tr></table></figure><ul><li><strong>executor</strong> 是<strong>同步立即执行</strong>的回调</li><li>executor （回调）接收<strong>两个固定形参</strong>，位置决定功能，名字随便起：</li></ul><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">new</span> <span class="title class_">Promise</span>(<span class="function">(<span class="params">res, rej</span>) =&gt;</span> &#123;   <span class="comment">// res 就是 resolve，rej 就是 reject</span></span><br><span class="line">  <span class="comment">// 1. 这里写同步代码</span></span><br><span class="line">  <span class="comment">// 2. 异步完成后调用 res(值) 或 rej(原因)</span></span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>]]></content>
+      
+      
+      <categories>
+          
+          <category> js </category>
+          
+      </categories>
+      
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>nextTick（Node和Vue）</title>
+      <link href="/post/2AND7Z0.html"/>
+      <url>/post/2AND7Z0.html</url>
+      
+        <content type="html"><![CDATA[<p>分为<code>node</code>和<code>vue</code>环境：</p><h2 id="相同点"><a href="#相同点" class="headerlink" title="相同点"></a>相同点</h2><p>两种环境下都是异步任务</p><h3 id="node环境"><a href="#node环境" class="headerlink" title="node环境"></a>node环境</h3><p>同步任务&gt;process.nextTick&gt;Promise（微任务）&gt;宏任务</p><h3 id="Vue环境（浏览器）"><a href="#Vue环境（浏览器）" class="headerlink" title="Vue环境（浏览器）"></a>Vue环境（浏览器）</h3><p>同步任务&gt;nextTick&#x3D;Promise&gt;宏任务</p><blockquote><p>注意：node.js环境下，process.nextTick是单独的队列  <code>nextTickQueue</code></p></blockquote>]]></content>
+      
+      
+      <categories>
+          
+          <category> js </category>
+          
+      </categories>
+      
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>DOM选择方法</title>
+      <link href="/post/15SGTYB.html"/>
+      <url>/post/15SGTYB.html</url>
+      
+        <content type="html"><![CDATA[<table><thead><tr><th align="left">方法</th><th align="left">返回类型</th><th align="left">实时性</th><th align="left">支持 CSS 选择器</th><th align="left">支持方法</th></tr></thead><tbody><tr><td align="left"><code>getElementById(id)</code></td><td align="left"><code>Element</code> &#x2F; <code>null</code></td><td align="left">-</td><td align="left">❌</td><td align="left"></td></tr><tr><td align="left"><code>getElementsByTagName(tag)</code></td><td align="left"><code>HTMLCollection</code></td><td align="left">✅ Live</td><td align="left">❌</td><td align="left"></td></tr><tr><td align="left"><code>getElementsByClassName(class)</code></td><td align="left"><code>HTMLCollection</code></td><td align="left">✅ Live</td><td align="left">❌</td><td align="left"></td></tr><tr><td align="left"><code>getElementsByName(name)</code></td><td align="left"><code>NodeList</code></td><td align="left">✅ Live</td><td align="left">❌</td><td align="left"></td></tr><tr><td align="left"><code>querySelector(selector)</code></td><td align="left"><code>Element</code> &#x2F; <code>null</code></td><td align="left">-</td><td align="left">✅</td><td align="left"></td></tr><tr><td align="left"><code>querySelectorAll(selector)</code></td><td align="left"><code>Static NodeList</code></td><td align="left">❌ Static</td><td align="left">✅</td><td align="left">forEach</td></tr></tbody></table>]]></content>
+      
+      
+      <categories>
+          
+          <category> js </category>
+          
+      </categories>
+      
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>call(),apply(),bind()</title>
+      <link href="/post/3ZCA7BD.html"/>
+      <url>/post/3ZCA7BD.html</url>
+      
+        <content type="html"><![CDATA[<blockquote><p>[!note] 函数方法</p></blockquote><h2 id="call"><a href="#call" class="headerlink" title="call()"></a>call()</h2><p>![[Pasted image 20260124205051.png]]<br>作用：</p><ul><li>调用.前的函数</li><li>改变this指向</li></ul><h2 id="apply"><a href="#apply" class="headerlink" title="apply()"></a>apply()</h2><p>![[Pasted image 20260124205022.png]]<br>作用：</p><ul><li>调用.前的函数</li><li>改变this指向<br>使用场景：</li><li>求最大值</li></ul><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> max = <span class="title class_">Math</span>.<span class="title function_">max</span>(<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>);</span><br><span class="line"><span class="keyword">const</span> max = <span class="title class_">Math</span>.<span class="title function_">max</span>(<span class="literal">null</span>,[<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>]) </span><br></pre></td></tr></table></figure><p>![[Pasted image 20260124204946.png]]</p><h2 id="bind"><a href="#bind" class="headerlink" title="bind()"></a>bind()</h2><p>![[Pasted image 20260124205217.png]]<br>作用：</p><ul><li>调用.前的函数</li><li>改变this指向</li><li>返回新的函数<blockquote><p>这里感觉可以等价于箭头函数，将this指向改成外层函数</p></blockquote></li></ul>]]></content>
+      
+      
+      <categories>
+          
+          <category> js </category>
+          
+      </categories>
+      
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>arr</title>
+      <link href="/post/ANCWV1.html"/>
+      <url>/post/ANCWV1.html</url>
+      
+        <content type="html"><![CDATA[<p>这是一个非常深刻的观察！你之所以觉得它是个“字符串”，可能是因为你在很多地方看到过 <code>&quot;Array&quot;</code> 这个词（带引号的），或者是被一些返回字符串的方法（比如 <code>typeof</code>）给误导了。</p><p>让我帮你把这个误区彻底解开：<strong>在 <code>arr.constructor === Array</code> 这个表达式里，两边其实都是“函数对象”，而不是字符串。</strong></p><hr><h2 id="1-拨乱反正：Array-到底是什么？"><a href="#1-拨乱反正：Array-到底是什么？" class="headerlink" title="1. 拨乱反正：Array 到底是什么？"></a>1. 拨乱反正：<code>Array</code> 到底是什么？</h2><p>在 JavaScript 中，<code>Array</code>（首字母大写，且<strong>不带引号</strong>）是一个<strong>内置的函数</strong>。</p><p>你可以去浏览器控制台输入下面这两行代码看看：</p><p>JavaScript</p><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">console.log(typeof Array); </span><br><span class="line">// 输出: &quot;function&quot; (证明它是个函数，不是字符串)</span><br><span class="line"></span><br><span class="line">console.log(Array); </span><br><span class="line">// 输出: ƒ Array() &#123; [native code] &#125; (它打印出来的是函数体)</span><br></pre></td></tr></table></figure><h3 id="为什么你会觉得它是字符串？"><a href="#为什么你会觉得它是字符串？" class="headerlink" title="为什么你会觉得它是字符串？"></a>为什么你会觉得它是字符串？</h3><p>可能你见过这个：<code>Object.prototype.toString.call(arr)</code> 返回的是 <code>&quot;[object Array]&quot;</code>。</p><ul><li><p>那个结果确实是<strong>字符串</strong>。</p></li><li><p>但 <code>Array</code> 本身是一个<strong>构造函数</strong>（就像一个模具）。</p></li></ul><hr><h2 id="2-形象理解：工厂与标签"><a href="#2-形象理解：工厂与标签" class="headerlink" title="2. 形象理解：工厂与标签"></a>2. 形象理解：工厂与标签</h2><p>我们可以把 JS 里的构造函数比作**“工厂”**。</p><ol><li><p><strong><code>Array</code> 函数</strong>：这就是一个**“数组工厂”**。它是一个实实在在存在的机构。</p></li><li><p><strong><code>arr</code> 变量</strong>：这是从“数组工厂”生产出来的一个**“包裹”**。</p></li><li><p><strong><code>arr.constructor</code></strong>：这是包裹上贴的一张**“回执单”**，上面记录了生产它的工厂地址。</p></li></ol><p>当你写 <code>arr.constructor === Array</code> 时，你其实是在问：</p><blockquote><p>“这个包裹上的‘生产工厂’（地址），是不是就是那个大名鼎鼎的‘数组工厂’（地址）？”</p></blockquote><hr><h2 id="3-为什么代码里不带引号？"><a href="#3-为什么代码里不带引号？" class="headerlink" title="3. 为什么代码里不带引号？"></a>3. 为什么代码里不带引号？</h2><p>这就是 JS 的语法规则：</p><ul><li><p><strong>带引号的 <code>&quot;Array&quot;</code></strong>：就是一个普通的单词（字符串），没有任何特殊能力。</p></li><li><p><strong>不带引号的 <code>Array</code></strong>：是一个<strong>变量名</strong>，它指向内存中那个存放“数组生产逻辑”的函数对象。</p></li></ul><h3 id="对比实验："><a href="#对比实验：" class="headerlink" title="对比实验："></a>对比实验：</h3><p>JavaScript</p><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">let arr = [];</span><br><span class="line"></span><br><span class="line">// 1. 正确写法：比较的是【函数对象】</span><br><span class="line">console.log(arr.constructor === Array);   // true</span><br><span class="line"></span><br><span class="line">// 2. 错误写法：比较的是【字符串】</span><br><span class="line">console.log(arr.constructor === &quot;Array&quot;); // false</span><br><span class="line">// 报错/结果为 false，因为一个是“函数”，一个是“字符串”，类型都不一样。</span><br></pre></td></tr></table></figure><hr><h2 id="4-总结：两边的真面目"><a href="#4-总结：两边的真面目" class="headerlink" title="4. 总结：两边的真面目"></a>4. 总结：两边的真面目</h2><p>在 <code>变量.constructor === Array</code> 这条语句中：</p><ul><li><p><strong>左边 (<code>变量.constructor</code>)</strong>：是一个<strong>指针</strong>，指向创建它的那个函数在内存里的位置。</p></li><li><p><strong>右边 (<code>Array</code>)</strong>：也是一个<strong>指针</strong>，指向全局环境下那个内置的数组构造函数。</p></li></ul><p>因为它们指向的是<strong>内存里的同一个函数</strong>，所以 <code>===</code> 成立，结果为 <code>true</code>。</p><hr><h3 id="💡-举一反三"><a href="#💡-举一反三" class="headerlink" title="💡 举一反三"></a>💡 举一反三</h3><p>这个逻辑在 JS 里是通用的。如果你以后学到自定义类（Class）：</p><p>JavaScript</p><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">class Dog &#123;&#125; // 定义一个“狗”类（工厂）</span><br><span class="line">let myPet = new Dog(); // 生产一只狗</span><br><span class="line"></span><br><span class="line">console.log(myPet.constructor === Dog); // true</span><br><span class="line">// 这里 Dog 也是一个函数，myPet.constructor 指向的也是这个函数</span><br></pre></td></tr></table></figure><p><strong>现在是不是清晰了？<code>Array</code> 在这里代表的是“工厂本身”，而不是它的名字。既然你提到了构造函数，你有没有好奇过，为什么我们要用 <code>new Array()</code> 或者 <code>[]</code> 这种不同的方式来创建数组呢？</strong></p>]]></content>
+      
+      
+      <categories>
+          
+          <category> js </category>
+          
+      </categories>
+      
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>轮询</title>
+      <link href="/post/2W80Y95.html"/>
+      <url>/post/2W80Y95.html</url>
+      
+        <content type="html"><![CDATA[]]></content>
+      
+      
+      <categories>
+          
+          <category> 网络 </category>
+          
+      </categories>
+      
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>状态码</title>
+      <link href="/post/22GPJSD.html"/>
+      <url>/post/22GPJSD.html</url>
+      
+        <content type="html"><![CDATA[<ul><li>1XX 表示消息</li><li>2XX 表示成功</li><li>3XX 表示重定向</li><li>4XX 表示客户端错误</li><li>5XX 表示服务端错误</li></ul>]]></content>
+      
+      
+      <categories>
+          
+          <category> 网络 </category>
+          
+      </categories>
+      
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>什么时候出现重定向？</title>
+      <link href="/post/13QB8HW.html"/>
+      <url>/post/13QB8HW.html</url>
+      
+        <content type="html"><![CDATA[<p>把“重定向”当成“交通协管员”就好：只要原路走不通、或者需要把人带到另一条更合适的路上，它就会跳出来拦一下，给你指条新路。</p><p>下面按“谁发起的”+“典型触发场景”两张表，一次性把开发、运维、产品、用户侧最常见的 14 种情况列全，以后见到任何“莫名其妙跳了一下”都能秒定位。</p><hr><p>一、服务端主动指挥（HTTP 3xx）</p><p>场景触发点用的状态码用户体感</p><ol><li>换域名 &#x2F; 强制 HTTPSNginx&#x2F;Apache 配了 <code>return 301 https://...</code>301旧书签进去瞬间变新地址</li><li>尾斜杠统一访问 <code>/about</code> → 301 到 <code>/about/</code>301看不出来，URL 多一根“&#x2F;”</li><li>大小写规范化<code>/Login</code> → <code>/login</code>301同上</li><li>临时维护原页面返回 302 到“维护公告页”302刷新后还能回到原地址</li><li>短链跳转t.cn&#x2F;abc 收到请求后查库 → 302 到长 URL302秒跳，几乎无感</li><li>登录后回到来源页Spring Security 自带 <code>/?redirect=/user</code>302&#x2F;303登录完自动回到刚才那页</li><li>表单重复提交防护Post-Redirect-Get 模式303刷新不再弹“是否重新提交”</li><li>API 保留动词POST &#x2F;v1&#x2F;order → 308 到 &#x2F;v2&#x2F;order308前端无感，Postman 能看到 308</li><li>负载均衡“粘滞”失败节点 A 把用户 307 到节点 B307偶尔刷一次出现“停顿一下”</li></ol><hr><p>二、浏览器自己折腾（HTML&#x2F;JS）</p><p>场景触发点方法用户体感<br>10. 老页面下线<code>&lt;meta http-equiv=&quot;refresh&quot; content=&quot;0; url=new.html&quot;&gt;</code>Meta Refresh先空白 0–1 秒再跳<br>11. 广告&#x2F;跳转页页面里先埋点再 <code>location.href = ...</code>JS 跳转中间可能插 5 秒广告<br>12. 前端路由守卫Vue 的 <code>router.beforeEach</code> 发现没 token → next(‘&#x2F;login’)JS 跳转地址栏瞬间变</p><ol start="13"><li>单点登录（SSO）发现没 cookie → 302 到统一登录中心，登录完再 302 回来混合 302可能闪两下域名</li></ol><hr><p>速查口诀</p><p>“看见地址栏变，先想 3xx；看不见地址栏变，先想 JS；屏幕没动文件里有，那是 shell 重定向。”</p><p>以后再遇到“咦怎么跳走了？”——先抓包（F12 Network）看状态码，再对照上表，一秒就能判断是“正常业务”还是“配置事故”。</p>]]></content>
+      
+      
+      <categories>
+          
+          <category> 网络 </category>
+          
+      </categories>
+      
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>http请求</title>
+      <link href="/post/29MBHR6.html"/>
+      <url>/post/29MBHR6.html</url>
+      
+        <content type="html"><![CDATA[<p>客户端 →<br>网关层（Nginx &#x2F; Envoy &#x2F; SLB &#x2F; CDN） →<br>应用层（Tomcat &#x2F; Node &#x2F; PHP-FPM &#x2F; 业务容器） →<br>后端服务（数据库、微服务、第三方接口）</p><hr><p>502 是“网关自己收到无效响应”，504 是“网关没在规定时间内收到响应”。</p><ul><li><code>502 Bad Gateway</code>。一般表现为你自己写的应用层服务(Java&#x2F;Go&#x2F;PHP)挂了，网关层无法接收到响应</li><li><code>504 Gateway Timeout</code>。一般表现为应用层服务 (upstream) 超时，如查库操作耗时十分钟，超过了 Nginx 配置的超时时间</li></ul>]]></content>
+      
+      
+      <categories>
+          
+          <category> 网络 </category>
+          
+      </categories>
+      
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>http缓存机制</title>
+      <link href="/post/1JPA5S2.html"/>
+      <url>/post/1JPA5S2.html</url>
+      
+        <content type="html"><![CDATA[<p><a href="https://juejin.cn/post/6844903593275817998">https://juejin.cn/post/6844903593275817998</a></p><h4 id="强制缓存"><a href="#强制缓存" class="headerlink" title="强制缓存"></a>强制缓存</h4><p>Response Headers<br><code>Expires</code> 这个头部也是丧心病狂：使用绝对时间，且有固定的格式</p><p><code>Cache-Control</code></p><ul><li><code>no-cache</code>，每次请求需要校验服务器资源的新鲜度</li><li><code>no-store</code>：不缓存任何内容</li><li><code>public</code>：可被任何缓存（包括 CDN）缓存</li><li><code>private</code>：仅客户端可缓存</li><li><code>max-age=31536000</code>，浏览器在一年内都不需要向服务器请求资源</li></ul><blockquote><p>强缓存生效时，浏览器<strong>不会发送请求</strong>，直接从缓存读取资源。</p></blockquote><h4 id="协商缓存"><a href="#协商缓存" class="headerlink" title="协商缓存"></a>协商缓存</h4><p>再次请求时，需要向服务器校验新鲜度，如果资源是新鲜的，返回 304，从浏览器获取资源![[18f43f9c-e85a-44ae-bf38-5382c66bbdf8.png]]</p><table><thead><tr><th align="left">类型</th><th align="left">是否发请求</th><th align="left">状态码</th><th align="left">控制字段</th><th align="left">特点</th></tr></thead><tbody><tr><td align="left">强缓存</td><td align="left">否</td><td align="left">200 (from cache)</td><td align="left">Expires、Cache-Control</td><td align="left">性能最佳，更新不及时</td></tr><tr><td align="left">协商缓存</td><td align="left">是</td><td align="left">304 Not Modified</td><td align="left">Last-Modified &#x2F; ETag</td><td align="left">节省带宽，需服务器验证</td></tr></tbody></table>]]></content>
+      
+      
+      <categories>
+          
+          <category> 网络 </category>
+          
+      </categories>
+      
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>高阶函数</title>
       <link href="/post/47f3f95c.html"/>
       <url>/post/47f3f95c.html</url>

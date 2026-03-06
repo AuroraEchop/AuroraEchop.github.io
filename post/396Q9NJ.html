@@ -1,0 +1,204 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>数组方法练习 | AuroraEchop</title><meta name="author" content="AuroraEchop"><meta name="copyright" content="AuroraEchop"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="ffffff"><meta name="description" content="### 1. 数组去重   如何去除数组中的重复元素？请举例说明使用 Set、filter 和 reduce 去重的不同方法。  set构造函数（自动去重）1234567&#x2F;&#x2F; 数组 → Set（去重）const arr &#x3D; [1, 2, 2, 3];const unique &#x3D; [...new Set(arr)]; &#x2F;&#x2F; [1, 2, 3]&#x2F;&#x2F; Set → 数组const set &#x3D; new Se">
+<meta property="og:type" content="article">
+<meta property="og:title" content="数组方法练习">
+<meta property="og:url" content="http://example.com/post/396Q9NJ">
+<meta property="og:site_name" content="AuroraEchop">
+<meta property="og:description" content="### 1. 数组去重   如何去除数组中的重复元素？请举例说明使用 Set、filter 和 reduce 去重的不同方法。  set构造函数（自动去重）1234567&#x2F;&#x2F; 数组 → Set（去重）const arr &#x3D; [1, 2, 2, 3];const unique &#x3D; [...new Set(arr)]; &#x2F;&#x2F; [1, 2, 3]&#x2F;&#x2F; Set → 数组const set &#x3D; new Se">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://example.com/img/user.jpg">
+<meta property="article:published_time" content="2026-03-06T12:49:11.359Z">
+<meta property="article:modified_time" content="2026-03-02T07:10:43.744Z">
+<meta property="article:author" content="AuroraEchop">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/img/user.jpg"><script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "数组方法练习",
+  "url": "http://example.com/post/396Q9NJ",
+  "image": "http://example.com/img/user.jpg",
+  "datePublished": "2026-03-06T12:49:11.359Z",
+  "dateModified": "2026-03-02T07:10:43.744Z",
+  "author": [
+    {
+      "@type": "Person",
+      "name": "AuroraEchop",
+      "url": "http://example.com/"
+    }
+  ]
+}</script><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="http://example.com/post/396Q9NJ"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        if (!ttl) return
+        const expiry = Date.now() + ttl * 86400000
+        localStorage.setItem(key, JSON.stringify({ value, expiry }))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return undefined
+        const { value, expiry } = JSON.parse(itemStr)
+        if (Date.now() > expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return value
+      }
+    }
+
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        Object.entries(attr).forEach(([key, val]) => script.setAttribute(key, val))
+        script.onload = script.onreadystatechange = () => {
+          if (!script.readyState || /loaded|complete/.test(script.readyState)) resolve()
+        }
+        script.onerror = reject
+        document.head.appendChild(script)
+      }),
+      getCSS: (url, id) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onload = link.onreadystatechange = () => {
+          if (!link.readyState || /loaded|complete/.test(link.readyState)) resolve()
+        }
+        link.onerror = reject
+        document.head.appendChild(link)
+      }),
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', 'ffffff')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"/search.xml","preload":true,"top_n_per_article":1,"unescape":false,"languages":{"hits_empty":"未找到符合您查询的内容：${query}","hits_stats":"共找到 ${hits} 篇文章"}},
+  translate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false,"highlightFullpage":false,"highlightMacStyle":false},
+  copy: {
+    success: '复制成功',
+    error: '复制失败',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: {"limitCount":150,"languages":{"author":"作者: AuroraEchop","link":"链接: ","source":"来源: AuroraEchop","info":"著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。"}},
+  lightbox: 'null',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyloadPlugin: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '数组方法练习',
+  isHighlightShrink: false,
+  isToc: true,
+  pageType: 'post'
+}</script><link rel="stylesheet" href="/css/transpancy.css"><meta name="generator" content="Hexo 7.3.0"></head><body><div id="web_bg" style="background-image: url(/img/bacg.png);"></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img text-center"><img src="/img/friend_404.gif" data-original="/img/user.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data text-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">56</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">3</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">6</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" target="_blank" rel="noopener" href="https://www.programmercarl.com/"><i class="fa-fw fas fa-th"></i><span> 题集</span></a></div><div class="menus_item"><a class="site-page" target="_blank" rel="noopener" href="https://toimc-team.github.io/notes-page/interview/basic/basic.html/"><i class="fa-fw fas fa-book"></i><span> 大前端</span></a></div><div class="menus_item"><a class="site-page" target="_blank" rel="noopener" href="https://q.shanyue.tech/roadmap"><i class="fa-fw fas fa-graduation-cap"></i><span> 每日一题</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fas fa-list"></i><span> 列表</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/music/"><i class="fa-fw fas fa-music"></i><span> Music</span></a></li><li><a class="site-page child" href="/movies/"><i class="fa-fw fas fa-video"></i><span> Movie</span></a></li></ul></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fas fa-archive"></i><span> 文章</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/message/"><i class="fa-fw fas fa-comment"></i><span> 留言板</span></a></div><div class="menus_item"><a class="site-page" href="/friends/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-user"></i><span> About</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url(/img/bacg.png);"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">AuroraEchop</span></a><a class="nav-page-title" href="/"><span class="site-name">数组方法练习</span></a></span><div id="menus"><div id="search-button"><span class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> 搜索</span></span></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" target="_blank" rel="noopener" href="https://www.programmercarl.com/"><i class="fa-fw fas fa-th"></i><span> 题集</span></a></div><div class="menus_item"><a class="site-page" target="_blank" rel="noopener" href="https://toimc-team.github.io/notes-page/interview/basic/basic.html/"><i class="fa-fw fas fa-book"></i><span> 大前端</span></a></div><div class="menus_item"><a class="site-page" target="_blank" rel="noopener" href="https://q.shanyue.tech/roadmap"><i class="fa-fw fas fa-graduation-cap"></i><span> 每日一题</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fas fa-list"></i><span> 列表</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/music/"><i class="fa-fw fas fa-music"></i><span> Music</span></a></li><li><a class="site-page child" href="/movies/"><i class="fa-fw fas fa-video"></i><span> Movie</span></a></li></ul></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fas fa-archive"></i><span> 文章</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/message/"><i class="fa-fw fas fa-comment"></i><span> 留言板</span></a></div><div class="menus_item"><a class="site-page" href="/friends/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-user"></i><span> About</span></a></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav><div id="post-info"><h1 class="post-title">数组方法练习</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2026-03-06T12:49:11.359Z" title="发表于 2026-03-06 20:49:11">2026-03-06</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2026-03-02T07:10:43.744Z" title="更新于 2026-03-02 15:10:43">2026-03-02</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/js/">js</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">总字数:</span><span class="word-count">698</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>2分钟</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title=""><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">浏览量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="container post-content" id="article-container"><pre><code>### 1. 数组去重
+</code></pre>
+<ul>
+<li>如何去除数组中的重复元素？请举例说明使用 <code>Set</code>、<code>filter</code> 和 <code>reduce</code> 去重的不同方法。</li>
+</ul>
+<h4 id="set构造函数（自动去重）"><a href="#set构造函数（自动去重）" class="headerlink" title="set构造函数（自动去重）"></a>set构造函数（自动去重）</h4><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 数组 → Set（去重）</span></span><br><span class="line"><span class="keyword">const</span> arr = [<span class="number">1</span>, <span class="number">2</span>, <span class="number">2</span>, <span class="number">3</span>];</span><br><span class="line"><span class="keyword">const</span> unique = [...<span class="keyword">new</span> <span class="title class_">Set</span>(arr)]; <span class="comment">// [1, 2, 3]</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// Set → 数组</span></span><br><span class="line"><span class="keyword">const</span> set = <span class="keyword">new</span> <span class="title class_">Set</span>([<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>]);</span><br><span class="line"><span class="keyword">const</span> arr2 = <span class="title class_">Array</span>.<span class="title function_">from</span>(set); <span class="comment">// [1, 2, 3]</span></span><br></pre></td></tr></table></figure>
+<p>对比两种方法的区别：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> set = <span class="keyword">new</span> <span class="title class_">Set</span>([<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>]);</span><br><span class="line"></span><br><span class="line"><span class="comment">// Array.from 的优势：第二个参数是 map 函数</span></span><br><span class="line"><span class="title class_">Array</span>.<span class="title function_">from</span>(set, <span class="function"><span class="params">x</span> =&gt;</span> x * <span class="number">2</span>); <span class="comment">// [2, 4, 6]</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 对比 [...set] 需要链式调用</span></span><br><span class="line">[...set].<span class="title function_">map</span>(<span class="function"><span class="params">x</span> =&gt;</span> x * <span class="number">2</span>); <span class="comment">// [2, 4, 6]，多创建了一个中间数组</span></span><br></pre></td></tr></table></figure>
+
+<p><strong>特性</strong>：</p>
+<ul>
+<li>时间复杂度：<strong>O(n)</strong>（哈希表实现）</li>
+<li>无法对<strong>对象内容</strong>去重（ <code>&#123;&#125; !== &#123;&#125;</code> ）</li>
+</ul>
+<h4 id="filter-方法（函数式-保留首次出现）"><a href="#filter-方法（函数式-保留首次出现）" class="headerlink" title="filter 方法（函数式&#x2F;保留首次出现）"></a>filter 方法（函数式&#x2F;保留首次出现）</h4><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> arr = [<span class="number">1</span>, <span class="number">2</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">3</span>, <span class="number">3</span>];</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> unique = arr.<span class="title function_">filter</span>(<span class="function">(<span class="params">item, index, self</span>) =&gt;</span> &#123;</span><br><span class="line">  <span class="keyword">return</span> self.<span class="title function_">indexOf</span>(item) === index;</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(unique); <span class="comment">// [1, 2, 3]</span></span><br></pre></td></tr></table></figure>
+
+<p><strong>核心机制</strong>：通过 <code>indexOf</code> 查找元素<strong>第一次出现的索引</strong>，若当前索引不等于首次索引，则过滤掉。<br><strong>性能</strong>：<strong>O(n²)</strong>，因为 <code>indexOf</code> 内部需遍历数组。</p>
+<h4 id="reduce-方法（累加器-最灵活）"><a href="#reduce-方法（累加器-最灵活）" class="headerlink" title="reduce 方法（累加器&#x2F;最灵活）"></a>reduce 方法（累加器&#x2F;最灵活）</h4><h5 id="基础版（O-n²-）"><a href="#基础版（O-n²-）" class="headerlink" title="基础版（O(n²)）"></a>基础版（O(n²)）</h5><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> unique = arr.<span class="title function_">reduce</span>(<span class="function">(<span class="params">acc, cur</span>) =&gt;</span> &#123;</span><br><span class="line">  <span class="keyword">return</span> acc.<span class="title function_">includes</span>(cur) ? acc : [...acc, cur];</span><br><span class="line">&#125;, []);</span><br></pre></td></tr></table></figure>
+
+<h5 id="优化版（O-n-保留顺序）"><a href="#优化版（O-n-保留顺序）" class="headerlink" title="优化版（O(n) + 保留顺序）"></a>优化版（O(n) + 保留顺序）</h5><h3 id="2-数组的切割与分段"><a href="#2-数组的切割与分段" class="headerlink" title="2. 数组的切割与分段"></a>2. <strong>数组的切割与分段</strong></h3><h4 id="Q1-如何使用-slice-和-splice-方法从数组中提取或删除元素？请解释它们的区别。"><a href="#Q1-如何使用-slice-和-splice-方法从数组中提取或删除元素？请解释它们的区别。" class="headerlink" title="Q1:  如何使用 slice 和 splice 方法从数组中提取或删除元素？请解释它们的区别。"></a>Q1:  如何使用 <code>slice</code> 和 <code>splice</code> 方法从数组中提取或删除元素？请解释它们的区别。</h4><p><code>slice</code> 和 <code>splice</code> 是 JavaScript 中最容易混淆的两个方法，核心区别：<strong><code>slice</code> 是”只读复制”，<code>splice</code> 是”手术刀切割”</strong>。</p>
+<p><strong>面试金句</strong>：”<code>slice</code> 是函数式编程的切片刀，返回副本支持链式调用；<code>splice</code> 是急诊手术刀，原地开刀返回切除的组织，用错会导致副作用 Bug。”</p>
+<h4 id="Q2-你会如何使用-slice-将数组分割成多个部分？"><a href="#Q2-你会如何使用-slice-将数组分割成多个部分？" class="headerlink" title="Q2: 你会如何使用 slice 将数组分割成多个部分？"></a>Q2: 你会如何使用 <code>slice</code> 将数组分割成多个部分？</h4><h5 id="1-固定大小分块（Chunk）-最常用"><a href="#1-固定大小分块（Chunk）-最常用" class="headerlink" title="1. 固定大小分块（Chunk）- 最常用"></a>1. 固定大小分块（Chunk）- 最常用</h5><p>将数组按每块 <code>size</code> 个元素分割（适用于分页上传、批量 API 请求）：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">function</span> <span class="title function_">chunk</span>(<span class="params">arr, size</span>) &#123;</span><br><span class="line">  <span class="keyword">const</span> result = [];</span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">let</span> i = <span class="number">0</span>; i &lt; arr.<span class="property">length</span>; i += size) &#123;</span><br><span class="line">    result.<span class="title function_">push</span>(arr.<span class="title function_">slice</span>(i, i + size));</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> result;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 使用</span></span><br><span class="line"><span class="keyword">const</span> data = [<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>, <span class="number">6</span>, <span class="number">7</span>, <span class="number">8</span>];</span><br><span class="line"><span class="title function_">chunk</span>(data, <span class="number">3</span>);</span><br><span class="line"><span class="comment">// [[1, 2, 3], [4, 5, 6], [7, 8]]</span></span><br></pre></td></tr></table></figure>
+
+<h5 id="2-滑动窗口（Sliding-Window）"><a href="#2-滑动窗口（Sliding-Window）" class="headerlink" title="2. 滑动窗口（Sliding Window）"></a>2. 滑动窗口（Sliding Window）</h5><p>获取连续重叠的子数组（用于算法题如”和最大的连续子数组”）：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">function</span> <span class="title function_">slidingWindow</span>(<span class="params">arr, windowSize</span>) &#123;</span><br><span class="line">  <span class="keyword">const</span> windows = [];</span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">let</span> i = <span class="number">0</span>; i &lt;= arr.<span class="property">length</span> - windowSize; i++) &#123;</span><br><span class="line">    windows.<span class="title function_">push</span>(arr.<span class="title function_">slice</span>(i, i + windowSize));</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> windows;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="title function_">slidingWindow</span>([<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>], <span class="number">3</span>);</span><br><span class="line"><span class="comment">// [[1, 2, 3], [2, 3, 4], [3, 4, 5]]</span></span><br></pre></td></tr></table></figure>
+
+<h6 id="关键边界处理"><a href="#关键边界处理" class="headerlink" title="关键边界处理"></a>关键边界处理</h6><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// slice 自动处理越界，无需手动判断</span></span><br><span class="line">[<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>].<span class="title function_">slice</span>(<span class="number">0</span>, <span class="number">100</span>);  <span class="comment">// [1, 2, 3]  不报错</span></span><br><span class="line">[<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>].<span class="title function_">slice</span>(<span class="number">5</span>, <span class="number">10</span>);   <span class="comment">// []         返回空数组</span></span><br></pre></td></tr></table></figure>
+
+<p><strong>性能提示</strong>：如果分割后需要频繁修改子数组，建议 <code>slice</code> 后使用 <code>map</code> 或展开运算符创建深拷贝，避免引用污染。</p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="http://example.com">AuroraEchop</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="http://example.com/post/396Q9NJ">http://example.com/post/396Q9NJ</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来源 <a href="http://example.com" target="_blank">AuroraEchop</a>！</span></div></div><div class="tag_share"><div class="post-share"><div class="social-share" data-image="/img/user.jpg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><a class="pagination-related" href="/post/1EXYNMR" title="数组原型方法"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info"><div class="info-1"><div class="info-item-1">上一篇</div><div class="info-item-2">数组原型方法</div></div><div class="info-2"><div class="info-item-1"> join()：用指定的分隔符将数组每一项拼接为字符串 push() ：向数组的末尾添加新元素 pop()：删除数组的最后一项 shift()：删除数组的第一项 unshift()：向数组首位添加新元素 slice()：按照条件查找出其中的部分元素 splice()：对数组进行增删改 fill(): 方法能使用特定值填充数组中的一个或多个元素 filter():“过滤”功能 concat()：用于连接两个或多个数组 indexOf()：检测当前值在数组中第一次出现的位置索引 lastIndexOf()：检测当前值在数组中最后一次出现的位置索引 every()：判断数组中每一项都是否满足条件 some()：判断数组中是否存在满足条件的项 includes()：判断一个数组是否包含一个指定的值 sort()：对数组的元素进行排序 reverse()：对数组进行倒序 forEach()：ES5 及以下循环遍历数组每一项 map()：ES6...</div></div></div></a><a class="pagination-related" href="/post/1Z790CY" title="解构"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-right"><div class="info-1"><div class="info-item-1">下一篇</div><div class="info-item-2">解构</div></div><div class="info-2"><div class="info-item-1">数组解构![[Pasted image 20260127135819.png]]  可以设定默认参数 支持解构多维数组，但是要保证解构一致  对象解构![[Pasted image 20260127141743.png]]属相值必须等于变量名，当属性值不能改的时候，可以变量名重命名：![[Pasted image 20260127142436.png]] ![[Pasted image 20260127142553.png]] 1234567891011121314const pig = &#123; name :&#x27;佩奇&#x27; , age: 6&#125;const &#123; name, age &#125; = pig;console.log(name); // 佩奇console.log(age);  // 6const&#123; name: n, age: m&#125; = pig;console.log(n); // 佩奇console.log(m); // 6const goods = [&#123;   ...</div></div></div></a></nav></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="/img/friend_404.gif" data-original="/img/user.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">AuroraEchop</div><div class="author-info-description">一个学生</div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">56</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">3</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">6</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/AuroraEchop"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons"><a class="social-icon" href="https://github.com/AuroraEchop" target="_blank" title="Github"><i class="fab fa-github" style="color: #24292e;"></i></a><a class="social-icon" href="tencent://AddContact/?fromId=45&amp;fromSubId=1&amp;subcmd=all&amp;uin=728831102&amp;website=www.oicqzone.com" target="_blank" title="QQ"><i class="fab fa-qq"></i></a><a class="social-icon" href="https://www.youtube.com/channel/UC9J1Z1Q7J9Q9J1Z1Q7J9Q9A" target="_blank" title="Youtube"><i class="fab fa-youtube"></i></a><a class="social-icon" href="https://space.bilibili.com/728831102" target="_blank" title="Bilibili"><i class="fab fa-bilibili"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">网页还没有完全搭建完成</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-4"><a class="toc-link" href="#set%E6%9E%84%E9%80%A0%E5%87%BD%E6%95%B0%EF%BC%88%E8%87%AA%E5%8A%A8%E5%8E%BB%E9%87%8D%EF%BC%89"><span class="toc-number">1.</span> <span class="toc-text">set构造函数（自动去重）</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#filter-%E6%96%B9%E6%B3%95%EF%BC%88%E5%87%BD%E6%95%B0%E5%BC%8F-%E4%BF%9D%E7%95%99%E9%A6%96%E6%AC%A1%E5%87%BA%E7%8E%B0%EF%BC%89"><span class="toc-number">2.</span> <span class="toc-text">filter 方法（函数式&#x2F;保留首次出现）</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#reduce-%E6%96%B9%E6%B3%95%EF%BC%88%E7%B4%AF%E5%8A%A0%E5%99%A8-%E6%9C%80%E7%81%B5%E6%B4%BB%EF%BC%89"><span class="toc-number">3.</span> <span class="toc-text">reduce 方法（累加器&#x2F;最灵活）</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#%E5%9F%BA%E7%A1%80%E7%89%88%EF%BC%88O-n%C2%B2-%EF%BC%89"><span class="toc-number">3.1.</span> <span class="toc-text">基础版（O(n²)）</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E4%BC%98%E5%8C%96%E7%89%88%EF%BC%88O-n-%E4%BF%9D%E7%95%99%E9%A1%BA%E5%BA%8F%EF%BC%89"><span class="toc-number">3.2.</span> <span class="toc-text">优化版（O(n) + 保留顺序）</span></a></li></ol></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-%E6%95%B0%E7%BB%84%E7%9A%84%E5%88%87%E5%89%B2%E4%B8%8E%E5%88%86%E6%AE%B5"><span class="toc-number"></span> <span class="toc-text">2. 数组的切割与分段</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#Q1-%E5%A6%82%E4%BD%95%E4%BD%BF%E7%94%A8-slice-%E5%92%8C-splice-%E6%96%B9%E6%B3%95%E4%BB%8E%E6%95%B0%E7%BB%84%E4%B8%AD%E6%8F%90%E5%8F%96%E6%88%96%E5%88%A0%E9%99%A4%E5%85%83%E7%B4%A0%EF%BC%9F%E8%AF%B7%E8%A7%A3%E9%87%8A%E5%AE%83%E4%BB%AC%E7%9A%84%E5%8C%BA%E5%88%AB%E3%80%82"><span class="toc-number">1.</span> <span class="toc-text">Q1:  如何使用 slice 和 splice 方法从数组中提取或删除元素？请解释它们的区别。</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Q2-%E4%BD%A0%E4%BC%9A%E5%A6%82%E4%BD%95%E4%BD%BF%E7%94%A8-slice-%E5%B0%86%E6%95%B0%E7%BB%84%E5%88%86%E5%89%B2%E6%88%90%E5%A4%9A%E4%B8%AA%E9%83%A8%E5%88%86%EF%BC%9F"><span class="toc-number">2.</span> <span class="toc-text">Q2: 你会如何使用 slice 将数组分割成多个部分？</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#1-%E5%9B%BA%E5%AE%9A%E5%A4%A7%E5%B0%8F%E5%88%86%E5%9D%97%EF%BC%88Chunk%EF%BC%89-%E6%9C%80%E5%B8%B8%E7%94%A8"><span class="toc-number">2.1.</span> <span class="toc-text">1. 固定大小分块（Chunk）- 最常用</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#2-%E6%BB%91%E5%8A%A8%E7%AA%97%E5%8F%A3%EF%BC%88Sliding-Window%EF%BC%89"><span class="toc-number">2.2.</span> <span class="toc-text">2. 滑动窗口（Sliding Window）</span></a><ol class="toc-child"><li class="toc-item toc-level-6"><a class="toc-link" href="#%E5%85%B3%E9%94%AE%E8%BE%B9%E7%95%8C%E5%A4%84%E7%90%86"><span class="toc-number">2.2.1.</span> <span class="toc-text">关键边界处理</span></a></li></ol></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/post/1ZPHR14" title="手写Promise及方法">手写Promise及方法</a><time datetime="2026-03-06T12:49:17.495Z" title="发表于 2026-03-06 20:49:17">2026-03-06</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/post/3VG9P55" title="手写instanceof">手写instanceof</a><time datetime="2026-03-06T12:49:17.493Z" title="发表于 2026-03-06 20:49:17">2026-03-06</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/post/2DGR8WG" title="promise">promise</a><time datetime="2026-03-06T12:49:17.489Z" title="发表于 2026-03-06 20:49:17">2026-03-06</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/post/19R72MK" title="semver规范">semver规范</a><time datetime="2026-03-06T12:49:11.371Z" title="发表于 2026-03-06 20:49:11">2026-03-06</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/post/24ER30X" title="CDN">CDN</a><time datetime="2026-03-06T12:49:11.369Z" title="发表于 2026-03-06 20:49:11">2026-03-06</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2025 - 2026 By AuroraEchop</div><div class="footer_custom_text">记得好好吃饭，早点睡</div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/instant.page/instantpage.min.js" type="module"></script><div class="js-pjax"></div><canvas class="fireworks" mobile="false"></canvas><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/fireworks.min.js"></script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><span id="loading-status"></span><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="text-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  数据加载中</span></div><div class="search-wrap"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜索" type="text"/></div></div><hr/><div id="local-search-results"></div><div id="local-search-stats-wrap"></div></div></div><div id="search-mask"></div><script src="/js/search/local-search.js"></script></div></div>
+        <style>
+            [bg-lazy] {
+                background-image: none !important;
+                background-color: #eee !important;
+            }
+        </style>
+        <script>
+            window.imageLazyLoadSetting = {
+                isSPA: false,
+                preloadRatio: 1,
+                processImages: null,
+            };
+        </script><script>window.addEventListener("load",function(){var t=/\.(gif|jpg|jpeg|tiff|png)$/i,r=/^data:image\/[a-z\d\-\.\+]+;base64,/;Array.prototype.slice.call(document.querySelectorAll("img[data-original]")).forEach(function(a){var e=a.parentNode;"A"===e.tagName&&(t.test(e.href)||r.test(e.href))&&(e.href=a.dataset.original)})});</script><script>(r=>{r.imageLazyLoadSetting.processImages=t;var a=r.imageLazyLoadSetting.isSPA,o=r.imageLazyLoadSetting.preloadRatio||1,d=i();function i(){var t=Array.prototype.slice.call(document.querySelectorAll("img[data-original]")),e=Array.prototype.slice.call(document.querySelectorAll("[bg-lazy]"));return t.concat(e)}function t(t){(a||t)&&(d=i());for(var e,n=0;n<d.length;n++)0<=(e=(e=d[n]).getBoundingClientRect()).bottom&&0<=e.left&&e.top<=(r.innerHeight*o||document.documentElement.clientHeight*o)&&(()=>{var t,e,a,o,i=d[n];e=function(){d=d.filter(function(t){return i!==t}),r.imageLazyLoadSetting.onImageLoaded&&r.imageLazyLoadSetting.onImageLoaded(i)},(t=i).dataset.loaded||(t.hasAttribute("bg-lazy")?(t.removeAttribute("bg-lazy"),e&&e()):(a=new Image,o=t.getAttribute("data-original"),a.onload=function(){t.src=o,t.removeAttribute("data-original"),t.setAttribute("data-loaded",!0),e&&e()},a.onerror=function(){t.removeAttribute("data-original"),t.setAttribute("data-loaded",!1),t.src=o},t.src!==o&&(a.src=o)))})()}function e(){clearTimeout(t.tId),t.tId=setTimeout(t,500)}t(),document.addEventListener("scroll",e),r.addEventListener("resize",e),r.addEventListener("orientationchange",e)})(this);</script></body></html>
