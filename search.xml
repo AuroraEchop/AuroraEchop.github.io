@@ -42,25 +42,6 @@
     
     
     <entry>
-      <title>promise</title>
-      <link href="/post/2DGR8WG.html"/>
-      <url>/post/2DGR8WG.html</url>
-      
-        <content type="html"><![CDATA[<h4 id="💡-面试加分点：解释核心逻辑"><a href="#💡-面试加分点：解释核心逻辑" class="headerlink" title="💡 面试加分点：解释核心逻辑"></a>💡 面试加分点：解释核心逻辑</h4><p>你可以这样告诉面试官：</p><blockquote><p>“Promise 本质上就是一个<strong>观察者模式</strong>（或发布订阅模式）。<code>constructor</code> 里立即执行业务逻辑，如果是异步的（比如 <code>setTimeout</code>），状态暂时不会变。此时调用 <code>then</code>，我会把回调函数 push 到一个数组里<strong>存起来</strong>。等到异步操作结束，调用 <code>resolve</code> 时，再遍历这个数组，把存好的回调拿出来执行。”</p></blockquote><p><em>(注：真正的 Promise <code>then</code> 必须返回一个新的 Promise 也就是链式调用，且执行时机是微任务。但在手写题中，能写出上面这个“异步回调存储”的逻辑，通常就已经及格了。)</em></p>]]></content>
-      
-      
-      <categories>
-          
-          <category> 手写 </category>
-          
-      </categories>
-      
-      
-    </entry>
-    
-    
-    
-    <entry>
       <title>semver规范</title>
       <link href="/post/19R72MK.html"/>
       <url>/post/19R72MK.html</url>
@@ -104,25 +85,6 @@
       <url>/post/3W5VQSX.html</url>
       
         <content type="html"><![CDATA[<h1 id="防抖"><a href="#防抖" class="headerlink" title="防抖"></a>防抖</h1><blockquote><p>单位时间内，频繁触发事件，只执行最后一次</p></blockquote><h2 id="利用lodash库实现防抖"><a href="#利用lodash库实现防抖" class="headerlink" title="利用lodash库实现防抖"></a>利用lodash库实现防抖</h2><p>语法：</p><ul><li><code>_.debounce(fun,时间)</code></li><li>鼠标在div移动，+1，防抖间隔未0.5s：</li></ul><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> div = <span class="variable language_">document</span>.<span class="title function_">querySelect</span>(<span class="string">&#x27;div&#x27;</span>)</span><br><span class="line"><span class="keyword">let</span> i =<span class="number">1</span></span><br><span class="line"><span class="keyword">function</span> <span class="title function_">mouseMove</span>(<span class="params"></span>)&#123;div.<span class="property">innerHTML</span> = i++&#125;</span><br><span class="line">div.<span class="title function_">addEventListener</span>(<span class="string">&#x27;mousemove&#x27;</span>, _.<span class="title function_">debounce</span>(mouseMove, <span class="number">500</span>))</span><br></pre></td></tr></table></figure><h2 id="手写防抖函数"><a href="#手写防抖函数" class="headerlink" title="手写防抖函数"></a>手写防抖函数</h2><p>![[Pasted image 20260124212423.png]]<br>![[Pasted image 20260124214120.png]]</p><blockquote><p>44行要写return一个函数：因为52行事件的回调带了参数，所以是传入了debounce的调用返回值（没有参数的函数名是传入函数的引用），这里要返回一个函数的引用，也就是return function(){…}</p></blockquote><h1 id="节流"><a href="#节流" class="headerlink" title="节流"></a>节流</h1><blockquote><p>单位时间，频繁触发事件，只执行一次<br>使用场景：高频事件（鼠标移动、页面尺寸缩放、滚动条滚动）<br>![[Pasted image 20260125210941.png]]</p></blockquote><h2 id="利用lodash库实现节流"><a href="#利用lodash库实现节流" class="headerlink" title="利用lodash库实现节流"></a>利用lodash库实现节流</h2><p>语法：</p><ul><li><code>_.throttle(fun,时间)</code></li></ul><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> div = <span class="variable language_">document</span>.<span class="title function_">querySelect</span>(<span class="string">&#x27;div&#x27;</span>)</span><br><span class="line"><span class="keyword">let</span> i =<span class="number">1</span></span><br><span class="line"><span class="keyword">function</span> <span class="title function_">mouseMove</span>(<span class="params"></span>)&#123;div.<span class="property">innerHTML</span> = i++&#125;</span><br><span class="line">div.<span class="title function_">addEventListener</span>(<span class="string">&#x27;mousemove&#x27;</span>, _.<span class="title function_">debounce</span>(mouseMove, <span class="number">500</span>))</span><br></pre></td></tr></table></figure><h2 id="手写节流函数"><a href="#手写节流函数" class="headerlink" title="手写节流函数"></a>手写节流函数</h2><p>![[Pasted image 20260125212819.png]]<br>![[Pasted image 20260125212943.png]]</p><blockquote><p>这里清空定时器使用的是 null，而不是clearTimeout，因为定时器内部无法清除，将定时器的指向清空后，定时器会被垃圾回收机制自动删除</p></blockquote><h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>![[Pasted image 20260125214255.png]]</p>]]></content>
-      
-      
-      <categories>
-          
-          <category> js </category>
-          
-      </categories>
-      
-      
-    </entry>
-    
-    
-    
-    <entry>
-      <title>闭包</title>
-      <link href="/post/3WP6RWJ.html"/>
-      <url>/post/3WP6RWJ.html</url>
-      
-        <content type="html"><![CDATA[<p>![[Pasted image 20260126163440.png]]</p><h3 id="闭包的作用"><a href="#闭包的作用" class="headerlink" title="闭包的作用"></a>闭包的作用</h3><blockquote><p>[!note ] 封闭数据，提供操作，外部也可以访问函数内部的变量</p></blockquote><h4 id="访问内部变量"><a href="#访问内部变量" class="headerlink" title="访问内部变量"></a>访问内部变量</h4><p>![[Pasted image 20260126164605.png]]</p><h4 id="实现数据私有"><a href="#实现数据私有" class="headerlink" title="实现数据私有"></a>实现数据私有</h4><p>![[Pasted image 20260126165814.png]]<br>这里有关垃圾回收机制：<br>const result &#x3D; fn()是全局的，标记清除法通过：<strong>result -&gt;fun -&gt;（内层函数fun调用了外层的变量）count</strong> ，能找到这个变量，所以即使在fn函数内部，变量也不会清除<br>![[Pasted image 20260126170654.png]]</p><h3 id="闭包的缺点-内存泄露"><a href="#闭包的缺点-内存泄露" class="headerlink" title="闭包的缺点: 内存泄露"></a>闭包的缺点: 内存泄露</h3><p>可能存在内存泄漏，因为上面例子中的内部函数的变量一直不销毁</p>]]></content>
       
       
       <categories>
@@ -232,44 +194,6 @@
     
     
     <entry>
-      <title>宏任务和微任务</title>
-      <link href="/post/3MY8011.html"/>
-      <url>/post/3MY8011.html</url>
-      
-        <content type="html"><![CDATA[]]></content>
-      
-      
-      <categories>
-          
-          <category> js </category>
-          
-      </categories>
-      
-      
-    </entry>
-    
-    
-    
-    <entry>
-      <title>展开运算符</title>
-      <link href="/post/HKS4KY.html"/>
-      <url>/post/HKS4KY.html</url>
-      
-        <content type="html"><![CDATA[<blockquote><p>[!note] 用来展开数组（其实也是对象）、对象</p></blockquote><p>![[Pasted image 20260126211309.png]]</p><h4 id="剩余参数和展开运算符"><a href="#剩余参数和展开运算符" class="headerlink" title="剩余参数和展开运算符"></a>剩余参数和展开运算符</h4><p>剩余参数：rest（收集参数）只能在函数最后一个参数使用<br>展开运算符：spread（发放、展开参数）且可在任意位置使用<br>![[Pasted image 20260126211352.png]]</p>]]></content>
-      
-      
-      <categories>
-          
-          <category> js </category>
-          
-      </categories>
-      
-      
-    </entry>
-    
-    
-    
-    <entry>
       <title>字符串方法问题</title>
       <link href="/post/N69RG.html"/>
       <url>/post/N69RG.html</url>
@@ -308,68 +232,11 @@
     
     
     <entry>
-      <title>变量提升</title>
-      <link href="/post/R80HGD.html"/>
-      <url>/post/R80HGD.html</url>
-      
-        <content type="html"><![CDATA[<p>![[Pasted image 20260126200136.png]]<br>其实同样的，函数有也有函数提升</p><blockquote><p>只提升声明，不提升值和函数调用，所以以下是错误的</p></blockquote><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="title function_">fun</span>()</span><br><span class="line"><span class="keyword">var</span> fun = <span class="keyword">function</span>(<span class="params"></span>)&#123;<span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&quot;函数调用提升&quot;</span>)&#125; <span class="comment">// TypeError:not a function</span></span><br></pre></td></tr></table></figure>]]></content>
-      
-      
-      <categories>
-          
-          <category> js </category>
-          
-      </categories>
-      
-      
-    </entry>
-    
-    
-    
-    <entry>
       <title>判断数据数组4种方法</title>
       <link href="/post/399ZSBQ.html"/>
       <url>/post/399ZSBQ.html</url>
       
         <content type="html"><![CDATA[<p>太棒了！作为小白，理解 JavaScript 中“判断数组”这件事，其实就像是在生活中**“通过不同方式确认一个包裹是不是快递”**。</p><p>有些方法看外壳（构造函数），有些方法看基因（原型链），有些方法则是直接扫条形码（官方 API）。</p><hr><h2 id="1-Array-isArray-内置隐藏标签-Class"><a href="#1-Array-isArray-内置隐藏标签-Class" class="headerlink" title="1. Array.isArray() (内置隐藏标签[[Class]])"></a>1. <code>Array.isArray()</code> (内置隐藏标签<code>[[Class]]</code>)</h2><p>这是 ES5 专门为判断数组增加的方法。它就像是<strong>官方提供的扫码枪</strong>，直接告诉你：是 (true) 还是不是 (false)。</p><ul><li><p><strong>语法：</strong> <code>Array.isArray(待检测的变量)</code></p></li><li><p><strong>优点：</strong> 简单直观，不会受到复杂环境（比如网页里的 iframe）的影响。</p></li></ul><p>JavaScript</p><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">let fruits = [&#x27;apple&#x27;, &#x27;banana&#x27;];</span><br><span class="line">let name = &#x27;Jack&#x27;;</span><br><span class="line"></span><br><span class="line">console.log(Array.isArray(fruits)); // 输出: true</span><br><span class="line">console.log(Array.isArray(name));   // 输出: false</span><br></pre></td></tr></table></figure><hr><h2 id="2-instanceof-运算符-查原型链"><a href="#2-instanceof-运算符-查原型链" class="headerlink" title="2. instanceof 运算符 (查原型链)"></a>2. <code>instanceof</code> 运算符 (查原型链)</h2><p><code>instanceof</code> 用来检查一个对象是否是由某个构造函数创建的。翻译成大白话就是：<strong>“你是不是 Array 这个家族的后代？”</strong></p><ul><li><p><strong>语法：</strong> <code>变量 instanceof Array</code></p></li><li><p><strong>优点：</strong> 语法非常符合英文逻辑。</p></li><li><p><strong>缺点：</strong> 如果你的网页里嵌套了 <code>iframe</code>（多个窗口环境），不同窗口的 Array 家族可能互不认亲，这时候会失效。</p></li></ul><p>JavaScript</p><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> colors = [<span class="string">&#x27;red&#x27;</span>, <span class="string">&#x27;blue&#x27;</span>];</span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(colors <span class="keyword">instanceof</span> <span class="title class_">Array</span>); <span class="comment">// 输出: true</span></span><br></pre></td></tr></table></figure><h3 id="不安全：当“家谱”被篡改时（手动修改原型）"><a href="#不安全：当“家谱”被篡改时（手动修改原型）" class="headerlink" title="不安全：当“家谱”被篡改时（手动修改原型）"></a>不安全：当“家谱”被篡改时（手动修改原型）</h3><p><code>instanceof</code> 是通过检查<strong>原型链</strong>来判断的。如果我们把一个数组的原型链强行改掉，<code>instanceof</code> 就会“眼瞎”，但 <code>Array.isArray</code> 依然能一眼认出来。</p><p>JavaScript</p><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> myArr = [<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>];</span><br><span class="line"></span><br><span class="line"><span class="comment">// 正常情况下</span></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(myArr <span class="keyword">instanceof</span> <span class="title class_">Array</span>); <span class="comment">// true</span></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="title class_">Array</span>.<span class="title function_">isArray</span>(myArr));   <span class="comment">// true</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// --- 骚操作开始：强行修改原型 ---</span></span><br><span class="line"><span class="comment">// 我们把这个数组的“祖先”改成一个普通对象，让它脱离 Array 家族</span></span><br><span class="line"><span class="title class_">Object</span>.<span class="title function_">setPrototypeOf</span>(myArr, <span class="title class_">Object</span>.<span class="property"><span class="keyword">prototype</span></span>); </span><br><span class="line"></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(myArr <span class="keyword">instanceof</span> <span class="title class_">Array</span>); <span class="comment">// false (它不认这个后代了)</span></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="title class_">Array</span>.<span class="title function_">isArray</span>(myArr));   <span class="comment">// true  (依然认定它是数组)</span></span><br></pre></td></tr></table></figure><p><strong>结论：</strong> <code>instanceof</code> 容易被欺骗，而 <code>Array.isArray</code> 看的是“本质”。</p><hr><h2 id="3-Object-prototype-toString-call"><a href="#3-Object-prototype-toString-call" class="headerlink" title="3. Object.prototype.toString.call()"></a>3. <code>Object.prototype.toString.call()</code></h2><p>这被开发者戏称为**“终极核武器”**。无论是什么类型（数组、对象、字符串、数字、甚至是 null），它都能准确识别出最原始的“基因标签”。</p><ul><li><p><strong>逻辑：</strong> 每一个 JS 对象内部都有一个标签，数组的标签是 <code>[object Array]</code>。</p></li><li><p><strong>语法：</strong> <code>Object.prototype.toString.call(待检测的变量)</code></p></li><li><p><strong>适用场景：</strong> 当你需要写一个非常严谨的库，或者不仅想判断数组，还想判断日期、正则等各种复杂类型时。</p></li></ul><p>JavaScript</p><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">let arr = [1, 2, 3];</span><br><span class="line">console.log(Object.prototype.toString.call(arr)); </span><br><span class="line">// 输出: &quot;[object Array]&quot;</span><br><span class="line"></span><br><span class="line">// 判断是否是数组：</span><br><span class="line">if (Object.prototype.toString.call(arr) === &#x27;[object Array]&#x27;) &#123;</span><br><span class="line">    console.log(&quot;这绝对是个数组！&quot;);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><hr><h2 id="4-constructor-arr-constructor只是名片"><a href="#4-constructor-arr-constructor只是名片" class="headerlink" title="4. constructor(arr.constructor只是名片)"></a>4. <code>constructor</code>(arr.constructor只是名片)</h2><p>每个对象都有一个 <code>constructor</code> 属性，指向它的构造函数。就像查看一个人的身份证，看他父亲是谁。</p><ul><li><p><strong>语法：</strong> <code>变量.constructor === Array</code></p></li><li><p><strong>风险：</strong> 这个“身份证”是可以被伪造的。如果有人手动改了变量的 constructor 属性，判断就不准了。</p></li></ul><p>JavaScript</p><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">let nums = [1, 2];</span><br><span class="line">console.log(nums.constructor === Array); // 输出: true</span><br></pre></td></tr></table></figure><hr><h2 id="递进关系"><a href="#递进关系" class="headerlink" title="递进关系"></a>递进关系</h2><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> arr = [<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>];</span><br><span class="line"></span><br><span class="line"><span class="comment">// 情况一：我只改名片，不改血缘</span></span><br><span class="line">arr.<span class="property">constructor</span> = <span class="title class_">String</span>; </span><br><span class="line"></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(arr.<span class="property">constructor</span> === <span class="title class_">Array</span>); <span class="comment">// false (名片改了)</span></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(arr <span class="keyword">instanceof</span> <span class="title class_">Array</span>);      <span class="comment">// true  (DNA 还在，还是 Array 家族的)</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 情况二：我改了血缘（原型链）</span></span><br><span class="line"><span class="title class_">Object</span>.<span class="title function_">setPrototypeOf</span>(arr, <span class="title class_">Object</span>.<span class="property"><span class="keyword">prototype</span></span>); </span><br><span class="line"></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(arr <span class="keyword">instanceof</span> <span class="title class_">Array</span>);      <span class="comment">// false (祖先里找不到 Array 了)</span></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="title class_">Array</span>.<span class="title function_">isArray</span>(arr));        <span class="comment">// true  (扫码枪：DNA 没变，它本质还是数组！)</span></span><br></pre></td></tr></table></figure><h2 id="5-计算机专业视角的深度总结"><a href="#5-计算机专业视角的深度总结" class="headerlink" title="5. 计算机专业视角的深度总结"></a>5. 计算机专业视角的深度总结</h2><ul><li><p><strong><code>instanceof</code></strong> 是 <strong>关系型判断</strong>。它利用了原型链的遍历。</p></li><li><p><strong><code>constructor</code></strong> 是 <strong>元数据（Metadata）检查</strong>。它利用的是对象属性的继承。</p></li><li><p><strong><code>Array.isArray()</code></strong> 是 <strong>标志位（Internal Flag）检查</strong>。它检查的是 V8 引擎在内存中给该对象打上的 <code>[[Class]]</code> 内部标签。</p></li></ul><blockquote><p><strong>结论：</strong> &gt; 只要涉及原型链，都会因为 <strong>“环境隔离”</strong>（如 Iframe）而变得不可靠。 作为开发者，如果你要判断数组，<strong>请把 <code>instanceof</code> 和 <code>constructor</code> 都放进故纸堆</strong>，只用 <code>Array.isArray()</code></p></blockquote>]]></content>
-      
-      
-      <categories>
-          
-          <category> js </category>
-          
-      </categories>
-      
-      
-    </entry>
-    
-    
-    
-    <entry>
-      <title>函数参数</title>
-      <link href="/post/3C5YBAN.html"/>
-      <url>/post/3C5YBAN.html</url>
-      
-        <content type="html"><![CDATA[<h2 id="动态参数"><a href="#动态参数" class="headerlink" title="动态参数"></a>动态参数</h2><p>![[Pasted image 20260126204715.png]]</p><ol><li>当不确定传递多少个实参的时候，我们怎么办？<ul><li>使用<code>arguments</code>动态参数</li></ul></li><li>arguments是什么？<ul><li>类数组</li><li>它只存在与函数内</li></ul></li></ol><h2 id="剩余参数"><a href="#剩余参数" class="headerlink" title="剩余参数"></a>剩余参数</h2><p>剩余参数允许我们将一个不定数量的参数表示为一个数组<br>![[Pasted image 20260126205604.png]]</p><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt;[]</span><br><span class="line">&gt;&gt;[<span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>]</span><br></pre></td></tr></table></figure><p>![[Pasted image 20260126205547.png]]<br>优先使用剩余参数，功能更强大、方便。</p><p>相关内容<br>[[展开运算符]]<br>箭头函数没有arguments参数，有 剩余参数 …args</p>]]></content>
-      
-      
-      <categories>
-          
-          <category> js </category>
-          
-      </categories>
-      
-      
-    </entry>
-    
-    
-    
-    <entry>
-      <title>作用域</title>
-      <link href="/post/1X112HW.html"/>
-      <url>/post/1X112HW.html</url>
-      
-        <content type="html"><![CDATA[<p>只有函数才能创建作用域<br>对象字面量不创建作用域</p><p>箭头函数<br>![[Pasted image 20260126215356.png]]</p><p>![[Pasted image 20260126215626.png]]</p><p>![[Pasted image 20260126215444.png]]</p>]]></content>
       
       
       <categories>
@@ -446,25 +313,6 @@
       <url>/post/2AND7Z0.html</url>
       
         <content type="html"><![CDATA[<p>分为<code>node</code>和<code>vue</code>环境：</p><h2 id="相同点"><a href="#相同点" class="headerlink" title="相同点"></a>相同点</h2><p>两种环境下都是异步任务</p><h3 id="node环境"><a href="#node环境" class="headerlink" title="node环境"></a>node环境</h3><p>同步任务&gt;process.nextTick&gt;Promise（微任务）&gt;宏任务</p><h3 id="Vue环境（浏览器）"><a href="#Vue环境（浏览器）" class="headerlink" title="Vue环境（浏览器）"></a>Vue环境（浏览器）</h3><p>同步任务&gt;nextTick&#x3D;Promise&gt;宏任务</p><blockquote><p>注意：node.js环境下，process.nextTick是单独的队列  <code>nextTickQueue</code></p></blockquote>]]></content>
-      
-      
-      <categories>
-          
-          <category> js </category>
-          
-      </categories>
-      
-      
-    </entry>
-    
-    
-    
-    <entry>
-      <title>DOM选择方法</title>
-      <link href="/post/15SGTYB.html"/>
-      <url>/post/15SGTYB.html</url>
-      
-        <content type="html"><![CDATA[<table><thead><tr><th align="left">方法</th><th align="left">返回类型</th><th align="left">实时性</th><th align="left">支持 CSS 选择器</th><th align="left">支持方法</th></tr></thead><tbody><tr><td align="left"><code>getElementById(id)</code></td><td align="left"><code>Element</code> &#x2F; <code>null</code></td><td align="left">-</td><td align="left">❌</td><td align="left"></td></tr><tr><td align="left"><code>getElementsByTagName(tag)</code></td><td align="left"><code>HTMLCollection</code></td><td align="left">✅ Live</td><td align="left">❌</td><td align="left"></td></tr><tr><td align="left"><code>getElementsByClassName(class)</code></td><td align="left"><code>HTMLCollection</code></td><td align="left">✅ Live</td><td align="left">❌</td><td align="left"></td></tr><tr><td align="left"><code>getElementsByName(name)</code></td><td align="left"><code>NodeList</code></td><td align="left">✅ Live</td><td align="left">❌</td><td align="left"></td></tr><tr><td align="left"><code>querySelector(selector)</code></td><td align="left"><code>Element</code> &#x2F; <code>null</code></td><td align="left">-</td><td align="left">✅</td><td align="left"></td></tr><tr><td align="left"><code>querySelectorAll(selector)</code></td><td align="left"><code>Static NodeList</code></td><td align="left">❌ Static</td><td align="left">✅</td><td align="left">forEach</td></tr></tbody></table>]]></content>
       
       
       <categories>
